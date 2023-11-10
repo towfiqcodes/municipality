@@ -1,6 +1,8 @@
+import 'package:Pourosova/providers/holding_entry_provider.dart';
 import 'package:Pourosova/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../blocs/totho/totho_bloc.dart';
 import '../../../models/get_system/get_system_config_response.dart';
@@ -270,216 +272,223 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.black38)),
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  singleFormField(
-                      headline: "হোল্ডিং এর ধরণ",
-                      isDropdownList: true,
-                      hint: "নির্বাচন করুন",
-                      dropdownList: holdingTypes,
-                      selectedValue: selectedHolding,
-                      dropdownOnChanged: (newValue) {
-                        setState(() {
-                          selectedHolding = newValue;
-                        });
-                      }),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                    child: Row(
+    return ChangeNotifierProvider(
+      create: (_) => HoldingEntryProvider(),
+      child: Consumer<HoldingEntryProvider>(
+        builder: (context, holdingEntryProvider, child){
+          return Column(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.black38)),
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: SingleChildScrollView(
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: Checkbox(
-                              value: isNewHolding,
-                              activeColor: const Color(0xff299429),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                              side: const BorderSide(color: Color(0xff7B7B7B), width: 1.5),
-                              checkColor: Colors.white,
-                              onChanged: (value) {
-                                setState(() {
-                                  isNewHolding = value!;
-                                });
-                              }),
+                        singleFormField(
+                            headline: "হোল্ডিং এর ধরণ",
+                            isDropdownList: true,
+                            hint: "নির্বাচন করুন",
+                            dropdownList: holdingTypes,
+                            selectedValue: selectedHolding,
+                            dropdownOnChanged: (newValue) {
+                              setState(() {
+                                selectedHolding = newValue;
+                              });
+                            }),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: Checkbox(
+                                    value: isNewHolding,
+                                    activeColor: const Color(0xff299429),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                    side: const BorderSide(color: Color(0xff7B7B7B), width: 1.5),
+                                    checkColor: Colors.white,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isNewHolding = value!;
+                                      });
+                                    }),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              const CustomText(text: "নতুন বাড়ি?", fontWeight: FontWeight.bold),
+                            ],
+                          ),
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        const CustomText(text: "নতুন বাড়ি?", fontWeight: FontWeight.bold),
+                        singleFormField(headline: "সুবিধাভোগীর নাম", controller: nameController),
+                        singleFormField(
+                            headline: "অভিভাবকের ধরণ",
+                            isDropdownList: true,
+                            dropdownList: guardianType,
+                            selectedValue: selectedGuardian,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedGuardian = newValue!;
+                              });
+                            }),
+                        singleFormField(headline: "অভিভাবকের নাম", controller: guardianNameController),
+                        singleFormField(headline: "মায়ের নাম", controller: guardianMotherNameController),
+                        singleFormField(
+                            headline: "লিঙ্গ",
+                            isDropdownList: true,
+                            dropdownList: gender,
+                            selectedValue: selectedGender,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedGender = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "বৈবাহিক অবস্থা",
+                            isDropdownList: true,
+                            dropdownList: maritalStatus,
+                            selectedValue: selectedMaritalStatus,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedMaritalStatus = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            onTap: () {
+                              selectBirthDate();
+                            },
+                            controller: dobController,
+                            headline: "জন্ম তারিখ",
+                            suffixIcon: Icons.calendar_today,
+                            isEnable: false,
+                            hint: "dd/mm/yyyy"),
+                        singleFormField(
+                            headline: "পরিচয়ের ধনণ",
+                            isDropdownList: true,
+                            dropdownList: identityType,
+                            selectedValue: selectedIdentity,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedIdentity = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "পরিচয় পত্রের নম্বর (এনআইডি নম্বর / জন্ম সনদ নম্বর জন্ম সনদ নম্বর",
+                            controller: nidController),
+                        singleFormField(headline: "মোবাইল নম্বর", controller: mobileNoController),
+                        singleFormField(headline: "ধর্ম", controller: religionController),
+                        singleFormField(
+                            headline: "পারিবারিক অবস্থার ধরণ",
+                            isDropdownList: true,
+                            dropdownList: familyFinancialStatus,
+                            selectedValue: selectedFamilyFinancialStatus,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedFamilyFinancialStatus = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "পুরুষ সদস্য সংখ্যা", controller: familyMemberMaleController),
+                        singleFormField(
+                            headline: "মহিলা সদস্য সংখ্যা", controller: familyMemberFemaleController),
+                        singleFormField(headline: "নিবন্ধন ফি", controller: registrationFeeController),
+                        singleFormField(
+                            headline: "পেমেন্টের ধরণ",
+                            isDropdownList: true,
+                            dropdownList: paymentTypes,
+                            selectedValue: selectedPaymentType,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedPaymentType = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "ভাতা নির্বাচন করুন",
+                            isDropdownList: true,
+                            dropdownList: allowances,
+                            selectedValue: selectedAllowance,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedAllowance = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "ভাতার পরিমাণ লিখুন (টাকা/অন্যান্য)",
+                            controller: allowanceController),
+                        singleFormField(
+                            headline: "পরিবারে কেউ প্রতিবন্ধী আছে?",
+                            isDropdownList: true,
+                            dropdownList: disabilityStatus,
+                            selectedValue: selectedDisabilityStatus,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedDisabilityStatus = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "আপনি কি মুক্তিযোদ্ধা?",
+                            isDropdownList: true,
+                            dropdownList: freedomFighterStatus,
+                            selectedValue: selectedFreedomFighterStatus,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedFreedomFighterStatus = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "পানির সংযোগ আছে কিনা?",
+                            isDropdownList: true,
+                            dropdownList: waterConnectivityStatus,
+                            selectedValue: selectedWaterConnectivityStatus,
+                            dropdownOnChanged: (DropdownItemModel? newValue) {
+                              setState(() {
+                                selectedWaterConnectivityStatus = newValue!;
+                              });
+                            }),
+                        singleFormField(
+                            headline: "পরিবারে জন্ম নিবন্ধনে কত জন আছে?",
+                            controller: numberOfMemberHaveBirthCertificateController),
+                        singleFormField(headline: "বাৎসরিক কর", controller: annualTaxController),
+                        singleFormField(
+                            headline: "সরকারি স্থাপনা?", controller: isGovernmentHoldingController),
+                        singleFormField(
+                            headline: "প্রতিষ্ঠানের নাম", controller: govtOfficeNameController),
+                        singleFormField(
+                            headline: "প্রতিষ্ঠান পরিচালকের নাম", controller: govtOfficerNameController),
+                        singleFormField(
+                            headline: "প্রতিষ্ঠান পরিচালকের মোবাইল নম্বর",
+                            controller: govtOfficerMobileNoController),
+                        singleFormField(
+                            headline: "প্রতিষ্ঠানের দৈর্ঘ্য", controller: govtOfficeLengthController),
+                        singleFormField(
+                            headline: "প্রতিষ্ঠানের প্রস্থ", controller: govtOfficeWidthController),
                       ],
                     ),
                   ),
-                  singleFormField(headline: "সুবিধাভোগীর নাম", controller: nameController),
-                  singleFormField(
-                      headline: "অভিভাবকের ধরণ",
-                      isDropdownList: true,
-                      dropdownList: guardianType,
-                      selectedValue: selectedGuardian,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedGuardian = newValue!;
-                        });
-                      }),
-                  singleFormField(headline: "অভিভাবকের নাম", controller: guardianNameController),
-                  singleFormField(headline: "মায়ের নাম", controller: guardianMotherNameController),
-                  singleFormField(
-                      headline: "লিঙ্গ",
-                      isDropdownList: true,
-                      dropdownList: gender,
-                      selectedValue: selectedGender,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedGender = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "বৈবাহিক অবস্থা",
-                      isDropdownList: true,
-                      dropdownList: maritalStatus,
-                      selectedValue: selectedMaritalStatus,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedMaritalStatus = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      onTap: () {
-                        selectBirthDate();
-                      },
-                      controller: dobController,
-                      headline: "জন্ম তারিখ",
-                      suffixIcon: Icons.calendar_today,
-                      isEnable: false,
-                      hint: "dd/mm/yyyy"),
-                  singleFormField(
-                      headline: "পরিচয়ের ধনণ",
-                      isDropdownList: true,
-                      dropdownList: identityType,
-                      selectedValue: selectedIdentity,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedIdentity = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "পরিচয় পত্রের নম্বর (এনআইডি নম্বর / জন্ম সনদ নম্বর জন্ম সনদ নম্বর",
-                      controller: nidController),
-                  singleFormField(headline: "মোবাইল নম্বর", controller: mobileNoController),
-                  singleFormField(headline: "ধর্ম", controller: religionController),
-                  singleFormField(
-                      headline: "পারিবারিক অবস্থার ধরণ",
-                      isDropdownList: true,
-                      dropdownList: familyFinancialStatus,
-                      selectedValue: selectedFamilyFinancialStatus,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedFamilyFinancialStatus = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "পুরুষ সদস্য সংখ্যা", controller: familyMemberMaleController),
-                  singleFormField(
-                      headline: "মহিলা সদস্য সংখ্যা", controller: familyMemberFemaleController),
-                  singleFormField(headline: "নিবন্ধন ফি", controller: registrationFeeController),
-                  singleFormField(
-                      headline: "পেমেন্টের ধরণ",
-                      isDropdownList: true,
-                      dropdownList: paymentTypes,
-                      selectedValue: selectedPaymentType,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedPaymentType = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "ভাতা নির্বাচন করুন",
-                      isDropdownList: true,
-                      dropdownList: allowances,
-                      selectedValue: selectedAllowance,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedAllowance = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "ভাতার পরিমাণ লিখুন (টাকা/অন্যান্য)",
-                      controller: allowanceController),
-                  singleFormField(
-                      headline: "পরিবারে কেউ প্রতিবন্ধী আছে?",
-                      isDropdownList: true,
-                      dropdownList: disabilityStatus,
-                      selectedValue: selectedDisabilityStatus,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedDisabilityStatus = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "আপনি কি মুক্তিযোদ্ধা?",
-                      isDropdownList: true,
-                      dropdownList: freedomFighterStatus,
-                      selectedValue: selectedFreedomFighterStatus,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedFreedomFighterStatus = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "পানির সংযোগ আছে কিনা?",
-                      isDropdownList: true,
-                      dropdownList: waterConnectivityStatus,
-                      selectedValue: selectedWaterConnectivityStatus,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedWaterConnectivityStatus = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "পরিবারে জন্ম নিবন্ধনে কত জন আছে?",
-                      controller: numberOfMemberHaveBirthCertificateController),
-                  singleFormField(headline: "বাৎসরিক কর", controller: annualTaxController),
-                  singleFormField(
-                      headline: "সরকারি স্থাপনা?", controller: isGovernmentHoldingController),
-                  singleFormField(
-                      headline: "প্রতিষ্ঠানের নাম", controller: govtOfficeNameController),
-                  singleFormField(
-                      headline: "প্রতিষ্ঠান পরিচালকের নাম", controller: govtOfficerNameController),
-                  singleFormField(
-                      headline: "প্রতিষ্ঠান পরিচালকের মোবাইল নম্বর",
-                      controller: govtOfficerMobileNoController),
-                  singleFormField(
-                      headline: "প্রতিষ্ঠানের দৈর্ঘ্য", controller: govtOfficeLengthController),
-                  singleFormField(
-                      headline: "প্রতিষ্ঠানের প্রস্থ", controller: govtOfficeWidthController),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: ElevatedButton(
-              onPressed: () {
-                _saveData();
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
-              ),
-              child: const CustomText(
-                text: "সংরক্ষন করুন",
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              )),
-        )
-      ],
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                    onPressed: () {
+                      _saveData();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
+                    ),
+                    child: const CustomText(
+                      text: "সংরক্ষন করুন",
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    )),
+              )
+            ],
+          );
+        },
+      ),
     );
   }
 
