@@ -22,6 +22,7 @@ class KhanaProdhanInformation extends StatefulWidget {
 }
 
 class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
+  final _formKey = GlobalKey<FormState>();
   DropdownItemModel? selectedHolding;
   DropdownItemModel? selectedGuardian;
   DropdownItemModel? selectedGender;
@@ -70,7 +71,7 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
 
   @override
   void initState() {
-    setDropdownValues();
+    setDropdownValues(provider: context.read<HoldingEntryProvider>());
     super.initState();
   }
 
@@ -116,85 +117,85 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
         .toList();
   }
 
-  void setDropdownValues() async {
+  void setDropdownValues({required HoldingEntryProvider provider}) async {
     final prefs = await SharedPreferences.getInstance();
     mapDataToList();
 
     // holding type
-    if (prefs.getString(StorageConstants.holdingType) != null) {
+    if (provider.holdingEntryRequest.holdingType != null) {
       selectedHolding = holdingTypes.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.holdingType),
+        (element) => element.key == provider.holdingEntryRequest.holdingType,
       );
     } else {
       selectedHolding = holdingTypes.isNotEmpty ? holdingTypes[0] : null;
     }
 
     // new house?
-    isNewHolding = prefs.getBool(StorageConstants.isNewHolding) ?? false;
+    isNewHolding = provider.holdingEntryRequest.isNewHolding ?? false;
 
     // name
-    nameController.text = prefs.getString(StorageConstants.name) ?? "";
+    nameController.text = provider.holdingEntryRequest.name ?? "";
 
     // guardian type
-    if (prefs.getString(StorageConstants.guardianType) != null) {
+    if (provider.holdingEntryRequest.guardianType != null) {
       selectedGuardian = guardianType.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.guardianType),
+        (element) => element.key == provider.holdingEntryRequest.guardianType,
       );
     } else {
       selectedGuardian = guardianType.isNotEmpty ? guardianType[0] : null;
     }
 
     // guardian name
-    guardianNameController.text = prefs.getString(StorageConstants.guardianName) ?? "";
+    guardianNameController.text = provider.holdingEntryRequest.guardianName ?? "";
 
     // mother name
-    guardianMotherNameController.text = prefs.getString(StorageConstants.guardianMotherName) ?? "";
+    guardianMotherNameController.text = provider.holdingEntryRequest.guardianMotherName ?? "";
 
     // gender
-    if (prefs.getString(StorageConstants.gender) != null) {
+    if (provider.holdingEntryRequest.gender != null) {
       selectedGender = gender.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.gender),
+        (element) => element.key == provider.holdingEntryRequest.gender,
       );
     } else {
       selectedGender = gender.isNotEmpty ? gender[0] : null;
     }
 
     // marital status
-    if (prefs.getString(StorageConstants.maritalStatus) != null) {
+    if (provider.holdingEntryRequest.maritalStatus != null) {
       selectedMaritalStatus = maritalStatus.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.maritalStatus),
+        (element) => element.key == provider.holdingEntryRequest.maritalStatus,
       );
     } else {
       selectedMaritalStatus = maritalStatus.isNotEmpty ? maritalStatus[0] : null;
     }
 
     // birth date
-    selectedBirthDate = prefs.getString(StorageConstants.dateOfBirth) != null
-        ? DateTime.parse(prefs.getString(StorageConstants.dateOfBirth)!)
+    selectedBirthDate = provider.holdingEntryRequest.dateOfBirth != null
+        ? DateTime.parse(provider.holdingEntryRequest.dateOfBirth!)
         : null;
 
     // identity type
-    if (prefs.getString(StorageConstants.identityType) != null) {
+    if (provider.holdingEntryRequest.identityType != null) {
       selectedIdentity = identityType.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.identityType),
+        (element) => element.key == provider.holdingEntryRequest.identityType,
       );
     } else {
       selectedIdentity = identityType.isNotEmpty ? identityType[0] : null;
     }
 
     // nid number
-    nidController.text = prefs.getString(StorageConstants.identityNumber) ?? "";
+    nidController.text = provider.holdingEntryRequest.identityNumber ?? "";
 
     // mobile number
-    mobileNoController.text = prefs.getString(StorageConstants.mobile) ?? "";
+    mobileNoController.text = provider.holdingEntryRequest.mobile ?? "";
 
     // religion
-    religionController.text = prefs.getString(StorageConstants.religion) ?? "";
+    religionController.text = provider.holdingEntryRequest.religion ?? "";
 
     // family financial status
-    if (prefs.getString(StorageConstants.familyType) != null) {
+    if (provider.holdingEntryRequest.familyType != null) {
       selectedFamilyFinancialStatus = familyFinancialStatus.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.familyType),
+        (element) => element.key == provider.holdingEntryRequest.familyType,
       );
     } else {
       selectedFamilyFinancialStatus =
@@ -202,48 +203,48 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
     }
 
     // number of male members
-    familyMemberMaleController.text = prefs.getString(StorageConstants.familyMemberMale) ?? "";
+    familyMemberMaleController.text = provider.holdingEntryRequest.familyMemberMale ?? "";
 
     // number of female members
-    familyMemberMaleController.text = prefs.getString(StorageConstants.familyMemberFemale) ?? "";
+    familyMemberMaleController.text = provider.holdingEntryRequest.familyMemberFemale ?? "";
 
     // registration fee
-    registrationFeeController.text = prefs.getString(StorageConstants.registrationFee) ?? "";
+    registrationFeeController.text = provider.holdingEntryRequest.registrationFee ?? "";
 
     // payment type
-    if (prefs.getString(StorageConstants.paymentType) != null) {
+    if (provider.holdingEntryRequest.paymentType != null) {
       selectedPaymentType = paymentTypes.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.paymentType),
+        (element) => element.key == provider.holdingEntryRequest.paymentType,
       );
     } else {
       selectedPaymentType = paymentTypes.isNotEmpty ? paymentTypes[0] : null;
     }
 
     // allowance
-    if (prefs.getString(StorageConstants.allowance) != null) {
+    if (provider.holdingEntryRequest.allowance != null) {
       selectedAllowance = allowances.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.allowance),
+        (element) => element.key == provider.holdingEntryRequest.allowance,
       );
     } else {
       selectedAllowance = allowances.isNotEmpty ? allowances[0] : null;
     }
 
     // allowance amount
-    allowanceController.text = prefs.getString(StorageConstants.allowanceDescription) ?? "";
+    allowanceController.text = provider.holdingEntryRequest.allowanceDescription ?? "";
 
     // disability status
-    if (prefs.getString(StorageConstants.disabilityStatus) != null) {
+    if (provider.holdingEntryRequest.disabilityStatus != null) {
       selectedDisabilityStatus = disabilityStatus.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.disabilityStatus),
+        (element) => element.key == provider.holdingEntryRequest.disabilityStatus,
       );
     } else {
       selectedDisabilityStatus = disabilityStatus.isNotEmpty ? disabilityStatus[0] : null;
     }
 
     // freedom fighter status
-    if (prefs.getString(StorageConstants.freedomFighterStatus) != null) {
+    if (provider.holdingEntryRequest.freedomFighterStatus != null) {
       selectedFreedomFighterStatus = freedomFighterStatus.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.freedomFighterStatus),
+        (element) => element.key == provider.holdingEntryRequest.freedomFighterStatus,
       );
     } else {
       selectedFreedomFighterStatus =
@@ -251,9 +252,9 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
     }
 
     // water connectivity status
-    if (prefs.getString(StorageConstants.waterConnectivityStatus) != null) {
+    if (provider.holdingEntryRequest.waterConnectivityStatus != null) {
       selectedWaterConnectivityStatus = waterConnectivityStatus.firstWhere(
-        (element) => element.value == prefs.getString(StorageConstants.waterConnectivityStatus),
+        (element) => element.key == provider.holdingEntryRequest.waterConnectivityStatus,
       );
     } else {
       selectedWaterConnectivityStatus =
@@ -262,316 +263,422 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
 
     // number of birth Certificates
     numberOfBirthCertificateController.text =
-        prefs.getString(StorageConstants.numberOfBirthCertificate) ?? "";
+        provider.holdingEntryRequest.numberOfBirthCertificate.toString() ?? "";
 
     // annual tax
-    annualTaxController.text = prefs.getString(StorageConstants.annualTax) ?? "";
+    annualTaxController.text = provider.holdingEntryRequest.annualTax ?? "";
 
+    setState(() {});
+  }
+
+  void _saveData({required HoldingEntryProvider provider}) async {
+    if (selectedHolding != null) {
+      provider.updateHoldingEntryRequest(holdingType: selectedHolding!.key);
+    }
+    if (selectedGuardian != null) {
+      provider.updateHoldingEntryRequest(isNewHolding: isNewHolding, name: selectedGuardian!.key);
+    }
+
+    if (selectedGender != null) {
+      provider.updateHoldingEntryRequest(gender: selectedGender!.key);
+    }
+
+    if (selectedIdentity != null) {
+      provider.updateHoldingEntryRequest(identityType: selectedIdentity!.key);
+    }
+
+    if (selectedFamilyFinancialStatus != null) {
+      provider.updateHoldingEntryRequest(familyType: selectedFamilyFinancialStatus!.key);
+    }
+
+    if (selectedPaymentType != null) {
+      provider.updateHoldingEntryRequest(paymentType: selectedPaymentType!.key);
+    }
+    if (selectedAllowance != null) {
+      provider.updateHoldingEntryRequest(allowance: selectedAllowance!.key);
+    }
+
+    if (selectedDisabilityStatus != null) {
+      provider.updateHoldingEntryRequest(disabilityStatus: selectedDisabilityStatus!.key);
+    }
+    if (selectedFreedomFighterStatus != null) {
+      provider.updateHoldingEntryRequest(freedomFighterStatus: selectedFreedomFighterStatus!.key);
+    }
+    if (selectedWaterConnectivityStatus != null) {
+      provider.updateHoldingEntryRequest(
+          waterConnectivityStatus: selectedWaterConnectivityStatus!.key);
+    }
+    provider.updateHoldingEntryRequest(
+        isNewHolding: isNewHolding,
+        name: nameController.text.trim(),
+        guardianName: guardianNameController.text.trim(),
+        guardianMotherName: guardianMotherNameController.text.trim(),
+        maritalStatus: selectedMaritalStatus!.key,
+        dateOfBirth: selectedBirthDate != null ? selectedBirthDate.toString() : "",
+        identityNumber: nidController.text.trim(),
+        mobile: mobileNoController.text.trim(),
+        familyMemberMale: familyMemberMaleController.text.trim(),
+        familyMemberFemale: familyMemberFemaleController.text.trim(),
+        registrationFee: registrationFeeController.text.trim(),
+        allowanceDescription: allowanceController.text.trim(),
+        numberOfBirthCertificate: int.tryParse(numberOfBirthCertificateController.text.trim()) ?? 0,
+        annualTax: annualTaxController.text.trim(),
+        govtOfficeName: govtOfficerNameController.text.trim(),
+        govtOfficerMobileNo: govtOfficerMobileNoController.text.trim(),
+        govtOfficeLength: govtOfficeLengthController.text.trim(),
+        govtOfficeWidth: govtOfficeWidthController.text.trim());
+
+    // religion remaining ------------------->
+    //await prefs.setString(StorageConstants.religion, religionController.text.trim());
+    // isGovernmentHolding remaining ------------------>
+    // await prefs.setString(StorageConstants.isGovernmentHolding, isGovernmentHoldingController.text.trim());
+
+    debugPrint(provider.holdingEntryRequest.toString());
+
+    setState(() {});
+    BlocProvider.of<TothoBloc>(context).add(const AddressEvent(value: 2));
+  }
+
+  void selectBirthDate() async {
+    selectedBirthDate = await selectDate(context);
+    if (selectedBirthDate != null) {
+      dobController.text = DateFormat("dd/MM/yyyy").format(selectedBirthDate!);
+    }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => HoldingEntryProvider(),
-      child: Consumer<HoldingEntryProvider>(
-        builder: (context, holdingEntryProvider, child){
-          return Column(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(border: Border.all(color: Colors.black38)),
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        singleFormField(
-                            headline: "হোল্ডিং এর ধরণ",
-                            isDropdownList: true,
-                            hint: "নির্বাচন করুন",
-                            dropdownList: holdingTypes,
-                            selectedValue: selectedHolding,
-                            dropdownOnChanged: (newValue) {
-                              setState(() {
-                                selectedHolding = newValue;
-                              });
-                            }),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: Checkbox(
-                                    value: isNewHolding,
-                                    activeColor: const Color(0xff299429),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                    side: const BorderSide(color: Color(0xff7B7B7B), width: 1.5),
-                                    checkColor: Colors.white,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isNewHolding = value!;
-                                      });
-                                    }),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              const CustomText(text: "নতুন বাড়ি?", fontWeight: FontWeight.bold),
-                            ],
+    final HoldingEntryProvider holdingEntryProvider = Provider.of<HoldingEntryProvider>(context);
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: Colors.black38)),
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    singleFormField(
+                        headline: "হোল্ডিং এর ধরণ",
+                        isDropdownList: true,
+                        hint: "নির্বাচন করুন",
+                        dropdownList: holdingTypes,
+                        selectedValue: selectedHolding,
+                        dropdownOnChanged: (newValue) {
+                          setState(() {
+                            selectedHolding = newValue;
+                          });
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Checkbox(
+                                value: isNewHolding,
+                                activeColor: const Color(0xff299429),
+                                shape:
+                                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                side: const BorderSide(color: Color(0xff7B7B7B), width: 1.5),
+                                checkColor: Colors.white,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isNewHolding = value!;
+                                  });
+                                }),
                           ),
-                        ),
-                        singleFormField(headline: "সুবিধাভোগীর নাম", controller: nameController),
-                        singleFormField(
-                            headline: "অভিভাবকের ধরণ",
-                            isDropdownList: true,
-                            dropdownList: guardianType,
-                            selectedValue: selectedGuardian,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedGuardian = newValue!;
-                              });
-                            }),
-                        singleFormField(headline: "অভিভাবকের নাম", controller: guardianNameController),
-                        singleFormField(headline: "মায়ের নাম", controller: guardianMotherNameController),
-                        singleFormField(
-                            headline: "লিঙ্গ",
-                            isDropdownList: true,
-                            dropdownList: gender,
-                            selectedValue: selectedGender,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedGender = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "বৈবাহিক অবস্থা",
-                            isDropdownList: true,
-                            dropdownList: maritalStatus,
-                            selectedValue: selectedMaritalStatus,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedMaritalStatus = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            onTap: () {
-                              selectBirthDate();
-                            },
-                            controller: dobController,
-                            headline: "জন্ম তারিখ",
-                            suffixIcon: Icons.calendar_today,
-                            isEnable: false,
-                            hint: "dd/mm/yyyy"),
-                        singleFormField(
-                            headline: "পরিচয়ের ধনণ",
-                            isDropdownList: true,
-                            dropdownList: identityType,
-                            selectedValue: selectedIdentity,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedIdentity = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "পরিচয় পত্রের নম্বর (এনআইডি নম্বর / জন্ম সনদ নম্বর জন্ম সনদ নম্বর",
-                            controller: nidController),
-                        singleFormField(headline: "মোবাইল নম্বর", controller: mobileNoController),
-                        singleFormField(headline: "ধর্ম", controller: religionController),
-                        singleFormField(
-                            headline: "পারিবারিক অবস্থার ধরণ",
-                            isDropdownList: true,
-                            dropdownList: familyFinancialStatus,
-                            selectedValue: selectedFamilyFinancialStatus,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedFamilyFinancialStatus = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "পুরুষ সদস্য সংখ্যা", controller: familyMemberMaleController),
-                        singleFormField(
-                            headline: "মহিলা সদস্য সংখ্যা", controller: familyMemberFemaleController),
-                        singleFormField(headline: "নিবন্ধন ফি", controller: registrationFeeController),
-                        singleFormField(
-                            headline: "পেমেন্টের ধরণ",
-                            isDropdownList: true,
-                            dropdownList: paymentTypes,
-                            selectedValue: selectedPaymentType,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedPaymentType = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "ভাতা নির্বাচন করুন",
-                            isDropdownList: true,
-                            dropdownList: allowances,
-                            selectedValue: selectedAllowance,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedAllowance = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "ভাতার পরিমাণ লিখুন (টাকা/অন্যান্য)",
-                            controller: allowanceController),
-                        singleFormField(
-                            headline: "পরিবারে কেউ প্রতিবন্ধী আছে?",
-                            isDropdownList: true,
-                            dropdownList: disabilityStatus,
-                            selectedValue: selectedDisabilityStatus,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedDisabilityStatus = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "আপনি কি মুক্তিযোদ্ধা?",
-                            isDropdownList: true,
-                            dropdownList: freedomFighterStatus,
-                            selectedValue: selectedFreedomFighterStatus,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedFreedomFighterStatus = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "পানির সংযোগ আছে কিনা?",
-                            isDropdownList: true,
-                            dropdownList: waterConnectivityStatus,
-                            selectedValue: selectedWaterConnectivityStatus,
-                            dropdownOnChanged: (DropdownItemModel? newValue) {
-                              setState(() {
-                                selectedWaterConnectivityStatus = newValue!;
-                              });
-                            }),
-                        singleFormField(
-                            headline: "পরিবারে জন্ম নিবন্ধনে কত জন আছে?",
-                            controller: numberOfMemberHaveBirthCertificateController),
-                        singleFormField(headline: "বাৎসরিক কর", controller: annualTaxController),
-                        singleFormField(
-                            headline: "সরকারি স্থাপনা?", controller: isGovernmentHoldingController),
-                        singleFormField(
-                            headline: "প্রতিষ্ঠানের নাম", controller: govtOfficeNameController),
-                        singleFormField(
-                            headline: "প্রতিষ্ঠান পরিচালকের নাম", controller: govtOfficerNameController),
-                        singleFormField(
-                            headline: "প্রতিষ্ঠান পরিচালকের মোবাইল নম্বর",
-                            controller: govtOfficerMobileNoController),
-                        singleFormField(
-                            headline: "প্রতিষ্ঠানের দৈর্ঘ্য", controller: govtOfficeLengthController),
-                        singleFormField(
-                            headline: "প্রতিষ্ঠানের প্রস্থ", controller: govtOfficeWidthController),
-                      ],
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const CustomText(text: "নতুন বাড়ি?", fontWeight: FontWeight.bold),
+                        ],
+                      ),
                     ),
-                  ),
+                    singleFormField(
+                      headline: "সুবিধাভোগীর নাম",
+                      controller: nameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "সুবিধাভোগীর নাম লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "অভিভাবকের ধরণ",
+                      isDropdownList: true,
+                      dropdownList: guardianType,
+                      selectedValue: selectedGuardian,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedGuardian = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "অভিভাবকের নাম",
+                      controller: guardianNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "অভিভাবকের নাম লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "মায়ের নাম",
+                      controller: guardianMotherNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "মায়ের নাম লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "লিঙ্গ",
+                      isDropdownList: true,
+                      dropdownList: gender,
+                      selectedValue: selectedGender,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedGender = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "বৈবাহিক অবস্থা",
+                      isDropdownList: true,
+                      dropdownList: maritalStatus,
+                      selectedValue: selectedMaritalStatus,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedMaritalStatus = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      onTap: () {
+                        selectBirthDate();
+                      },
+                      controller: dobController,
+                      headline: "জন্ম তারিখ",
+                      suffixIcon: Icons.calendar_today,
+                      isEnable: false,
+                      hint: "dd/mm/yyyy",
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "জন্ম তারিখ নির্বাচন করুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "পরিচয়ের ধনণ",
+                      isDropdownList: true,
+                      dropdownList: identityType,
+                      selectedValue: selectedIdentity,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedIdentity = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "পরিচয় পত্রের নম্বর (এনআইডি নম্বর / জন্ম সনদ নম্বর জন্ম সনদ নম্বর",
+                      controller: nidController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "পরিচয় পত্রের নম্বর নাম লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "মোবাইল নম্বর",
+                      controller: mobileNoController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "মোবাইল নম্বর লিখুন";
+                        }
+                        if (value.length != 11) {
+                          return "১১ ডিজিটের সঠিক মোবাইল নম্বর লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "ধর্ম",
+                      controller: religionController,
+                    ),
+                    singleFormField(
+                      headline: "পারিবারিক অবস্থার ধরণ",
+                      isDropdownList: true,
+                      dropdownList: familyFinancialStatus,
+                      selectedValue: selectedFamilyFinancialStatus,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedFamilyFinancialStatus = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "পুরুষ সদস্য সংখ্যা",
+                      controller: familyMemberMaleController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "পুরুষ সদস্য সংখ্যা";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "মহিলা সদস্য সংখ্যা",
+                      controller: familyMemberFemaleController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "মহিলা সদস্য সংখ্যা";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "নিবন্ধন ফি",
+                      controller: registrationFeeController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "নিবন্ধন ফি লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                      headline: "পেমেন্টের ধরণ",
+                      isDropdownList: true,
+                      dropdownList: paymentTypes,
+                      selectedValue: selectedPaymentType,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedPaymentType = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "ভাতা নির্বাচন করুন",
+                      isDropdownList: true,
+                      dropdownList: allowances,
+                      selectedValue: selectedAllowance,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedAllowance = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                        headline: "ভাতার পরিমাণ লিখুন (টাকা/অন্যান্য)",
+                        controller: allowanceController,
+                        isMandatory: false),
+                    singleFormField(
+                      headline: "পরিবারে কেউ প্রতিবন্ধী আছে?",
+                      isDropdownList: true,
+                      dropdownList: disabilityStatus,
+                      selectedValue: selectedDisabilityStatus,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedDisabilityStatus = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "আপনি কি মুক্তিযোদ্ধা?",
+                      isDropdownList: true,
+                      dropdownList: freedomFighterStatus,
+                      selectedValue: selectedFreedomFighterStatus,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedFreedomFighterStatus = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "পানির সংযোগ আছে কিনা?",
+                      isDropdownList: true,
+                      dropdownList: waterConnectivityStatus,
+                      selectedValue: selectedWaterConnectivityStatus,
+                      dropdownOnChanged: (DropdownItemModel? newValue) {
+                        setState(() {
+                          selectedWaterConnectivityStatus = newValue!;
+                        });
+                      },
+                    ),
+                    singleFormField(
+                      headline: "পরিবারে জন্ম নিবন্ধনে কত জন আছে?",
+                      controller: numberOfMemberHaveBirthCertificateController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "পরিবারে জন্ম নিবন্ধনে কত জন আছে?";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                        headline: "বাৎসরিক কর",
+                        controller: annualTaxController,
+                        isMandatory: false),
+                    singleFormField(
+                        headline: "সরকারি স্থাপনা?",
+                        controller: isGovernmentHoldingController,
+                        isMandatory: false),
+                    singleFormField(
+                        headline: "প্রতিষ্ঠানের নাম",
+                        controller: govtOfficeNameController,
+                        isMandatory: false),
+                    singleFormField(
+                        headline: "প্রতিষ্ঠান পরিচালকের নাম",
+                        controller: govtOfficerNameController,
+                        isMandatory: false),
+                    singleFormField(
+                        headline: "প্রতিষ্ঠান পরিচালকের মোবাইল নম্বর",
+                        controller: govtOfficerMobileNoController,
+                        isMandatory: false),
+                    singleFormField(
+                        headline: "প্রতিষ্ঠানের দৈর্ঘ্য",
+                        controller: govtOfficeLengthController,
+                        isMandatory: false),
+                    singleFormField(
+                        headline: "প্রতিষ্ঠানের প্রস্থ",
+                        controller: govtOfficeWidthController,
+                        isMandatory: false),
+                  ],
                 ),
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                    onPressed: () {
-                      _saveData();
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
-                    ),
-                    child: const CustomText(
-                      text: "সংরক্ষন করুন",
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    )),
-              )
-            ],
-          );
-        },
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _saveData(provider: holdingEntryProvider);
+                  }
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
+                ),
+                child: const CustomText(
+                  text: "সংরক্ষন করুন",
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                )),
+          )
+        ],
       ),
     );
-  }
-
-  void _saveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (selectedHolding != null) {
-      await prefs.setString(StorageConstants.holdingType, selectedHolding!.value);
-    }
-    await prefs.setBool(StorageConstants.isNewHolding, isNewHolding);
-    await prefs.setString(StorageConstants.name, nameController.text.trim());
-    if (selectedGuardian != null) {
-      await prefs.setString(StorageConstants.guardianType, selectedGuardian!.value);
-    }
-    await prefs.setString(StorageConstants.guardianName, guardianNameController.text.trim());
-    await prefs.setString(
-        StorageConstants.guardianMotherName, guardianMotherNameController.text.trim());
-    if (selectedGender != null) {
-      await prefs.setString(StorageConstants.gender, selectedGender!.value);
-    }
-    await prefs.setString(StorageConstants.maritalStatus, selectedMaritalStatus!.value);
-    await prefs.setString(StorageConstants.dateOfBirth,
-        selectedBirthDate != null ? selectedBirthDate.toString() : "");
-    if (selectedIdentity != null) {
-      await prefs.setString(StorageConstants.identityType, selectedIdentity!.value);
-    }
-    await prefs.setString(StorageConstants.identityNumber, nidController.text.trim());
-    await prefs.setString(StorageConstants.mobile, mobileNoController.text.trim());
-    await prefs.setString(StorageConstants.religion, religionController.text.trim());
-    if (selectedFamilyFinancialStatus != null) {
-      await prefs.setString(StorageConstants.familyType, selectedFamilyFinancialStatus!.value);
-    }
-    await prefs.setString(
-        StorageConstants.familyMemberMale, familyMemberMaleController.text.trim());
-    await prefs.setString(
-        StorageConstants.familyMemberFemale, familyMemberFemaleController.text.trim());
-    await prefs.setString(StorageConstants.registrationFee, registrationFeeController.text.trim());
-    if (selectedPaymentType != null) {
-      await prefs.setString(StorageConstants.paymentType, selectedPaymentType!.value);
-    }
-    if (selectedAllowance != null) {
-      await prefs.setString(StorageConstants.allowance, selectedAllowance!.value);
-    }
-
-    await prefs.setString(StorageConstants.allowanceDescription, allowanceController.text.trim());
-    if (selectedDisabilityStatus != null) {
-      await prefs.setString(StorageConstants.disabilityStatus, selectedDisabilityStatus!.value);
-    }
-    if (selectedFreedomFighterStatus != null) {
-      await prefs.setString(
-          StorageConstants.freedomFighterStatus, selectedFreedomFighterStatus!.value);
-    }
-    if (selectedWaterConnectivityStatus != null) {
-      await prefs.setString(
-          StorageConstants.waterConnectivityStatus, selectedWaterConnectivityStatus!.value);
-    }
-    await prefs.setString(
-        StorageConstants.numberOfBirthCertificate, numberOfBirthCertificateController.text.trim());
-    await prefs.setString(StorageConstants.annualTax, annualTaxController.text.trim());
-    await prefs.setString(
-        StorageConstants.isGovernmentHolding, isGovernmentHoldingController.text.trim());
-    await prefs.setString(
-        StorageConstants.governmentOfficeName, govtOfficeNameController.text.trim());
-    await prefs.setString(
-        StorageConstants.governmentOfficerName, govtOfficerNameController.text.trim());
-    await prefs.setString(
-        StorageConstants.governmentOfficerMobileNo, govtOfficerMobileNoController.text.trim());
-    await prefs.setString(
-        StorageConstants.governmentOfficeLength, govtOfficeLengthController.text.trim());
-    await prefs.setString(
-        StorageConstants.governmentOfficeWidth, govtOfficeWidthController.text.trim());
-    setState(() {});
-    BlocProvider.of<TothoBloc>(context).add(const AddressEvent(value: 2));
-
-  }
-
-  void selectBirthDate() async {
-    selectedBirthDate = await selectDate(context,
-        initialDate: DateTime.now(),
-        lastDate: DateTime.now(),
-        firstDate: DateTime(DateTime.now().year - 100));
-    if (selectedBirthDate != null) {
-      dobController.text = DateFormat("dd/MM/yyyy").format(selectedBirthDate!);
-    }
-    setState(() {});
   }
 }

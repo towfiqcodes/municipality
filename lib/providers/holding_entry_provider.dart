@@ -2,9 +2,9 @@ import 'package:Pourosova/models/request/holding_entry_request.dart';
 import 'package:flutter/material.dart';
 
 class HoldingEntryProvider extends ChangeNotifier {
-  HoldingEntryRequest? _holdingEntryRequest;
+  HoldingEntryRequest _holdingEntryRequest = HoldingEntryRequest();
 
-  HoldingEntryRequest? get holdingEntryRequest => _holdingEntryRequest;
+  HoldingEntryRequest get holdingEntryRequest => _holdingEntryRequest;
 
   void updateHoldingEntryRequest({
     String? holdingType,
@@ -52,7 +52,7 @@ class HoldingEntryProvider extends ChangeNotifier {
     String? occupation,
     String? fiscalYear,
   }) {
-    _holdingEntryRequest = _holdingEntryRequest?.copyWith(
+    _holdingEntryRequest = _holdingEntryRequest!.copyWith(
       holdingType: holdingType,
       isNewHolding: isNewHolding,
       name: name,

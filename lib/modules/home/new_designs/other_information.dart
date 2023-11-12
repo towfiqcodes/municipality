@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../blocs/totho/totho_bloc.dart';
 import '../../../models/get_system/get_system_config_response.dart';
+import '../../../providers/holding_entry_provider.dart';
 import '../../../shared/constants/storage.dart';
 import '../../../shared/widgets/custom_text.dart';
 import '../../../shared/widgets/single_form_field.dart';
@@ -19,6 +21,7 @@ class OtherInformation extends StatefulWidget {
 }
 
 class _OtherInformationState extends State<OtherInformation> {
+  final _formKey = GlobalKey<FormState>();
   DropdownItemModel? selectedElectricityState;
   DropdownItemModel? selectedSanitationCondition;
   DropdownItemModel? selectedHouseType;
@@ -82,110 +85,142 @@ class _OtherInformationState extends State<OtherInformation> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.black38)),
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  singleFormField(
-                      headline: "বৈদ্যুতিক অবস্থা",
-                      isDropdownList: true,
-                      hint: "নির্বাচন করুন",
-                      dropdownList: electricityStates,
-                      selectedValue: selectedElectricityState,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedElectricityState = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "স্যানিটেশনের অবস্থা",
-                      isDropdownList: true,
-                      hint: "নির্বাচন করুন",
-                      dropdownList: sanitationConditions,
-                      selectedValue: selectedSanitationCondition,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedSanitationCondition = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "বাড়ির ধরন",
-                      isDropdownList: true,
-                      hint: "নির্বাচন করুন",
-                      dropdownList: houseTypes,
-                      selectedValue: selectedHouseType,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedHouseType = newValue!;
-                        });
-                      }),
-                  singleFormField(headline: "মোট বাড়ি", controller: noOfHouseController),
-                  singleFormField(
-                      headline: "পেশা",
-                      isDropdownList: true,
-                      hint: "নির্বাচন করুন",
-                      dropdownList: occupationList,
-                      selectedValue: selectedOccupation,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedOccupation = newValue!;
-                        });
-                      }),
-                  singleFormField(
-                      headline: "শেষ ট্যাক্স প্রদানের অর্থবছর",
-                      isDropdownList: true,
-                      hint: "নির্বাচন করুন",
-                      dropdownList: taxPaidYears,
-                      selectedValue: selectedTaxPaidYear,
-                      dropdownOnChanged: (DropdownItemModel? newValue) {
-                        setState(() {
-                          selectedTaxPaidYear = newValue!;
-                        });
-                      }),
-                ],
+    final HoldingEntryProvider holdingEntryProvider = Provider.of<HoldingEntryProvider>(context);
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: Colors.black38)),
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    singleFormField(
+                        headline: "বৈদ্যুতিক অবস্থা",
+                        isDropdownList: true,
+                        hint: "নির্বাচন করুন",
+                        dropdownList: electricityStates,
+                        selectedValue: selectedElectricityState,
+                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                          setState(() {
+                            selectedElectricityState = newValue!;
+                          });
+                        }),
+                    singleFormField(
+                        headline: "স্যানিটেশনের অবস্থা",
+                        isDropdownList: true,
+                        hint: "নির্বাচন করুন",
+                        dropdownList: sanitationConditions,
+                        selectedValue: selectedSanitationCondition,
+                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                          setState(() {
+                            selectedSanitationCondition = newValue!;
+                          });
+                        }),
+                    singleFormField(
+                        headline: "বাড়ির ধরন",
+                        isDropdownList: true,
+                        hint: "নির্বাচন করুন",
+                        dropdownList: houseTypes,
+                        selectedValue: selectedHouseType,
+                        dropdownValidator: (value) {
+                          if (selectedHouseType == null) {
+                            return "বাড়ির ধরন নির্বাচন করুন";
+                          }
+                          return null;
+                        },
+                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                          setState(() {
+                            selectedHouseType = newValue!;
+                          });
+                        }),
+                    singleFormField(
+                      headline: "মোট বাড়ি",
+                      controller: noOfHouseController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "মোট বাড়ির সংখ্যা লিখুন";
+                        }
+                        return null;
+                      },
+                    ),
+                    singleFormField(
+                        headline: "পেশা",
+                        isDropdownList: true,
+                        hint: "নির্বাচন করুন",
+                        dropdownList: occupationList,
+                        selectedValue: selectedOccupation,
+                        dropdownValidator: (value) {
+                          if (selectedOccupation == null) {
+                            return "পেশা নির্বাচন করুন";
+                          }
+                          return null;
+                        },
+                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                          setState(() {
+                            selectedOccupation = newValue!;
+                          });
+                        }),
+                    singleFormField(
+                        headline: "শেষ ট্যাক্স প্রদানের অর্থবছর",
+                        isDropdownList: true,
+                        hint: "নির্বাচন করুন",
+                        dropdownList: taxPaidYears,
+                        selectedValue: selectedTaxPaidYear,
+                        dropdownValidator: (value) {
+                          if (selectedTaxPaidYear == null) {
+                            return "ট্যাক্স প্রদানের অর্থবছর নির্বাচন করুন";
+                          }
+                          return null;
+                        },
+                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                          setState(() {
+                            selectedTaxPaidYear = newValue!;
+                          });
+                        }),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextButton(
-              onPressed: () {
-                BlocProvider.of<TothoBloc>(context).add(const AddressEvent(value: 2));
-              },
-              child: const CustomText(text: "তালিকায় ফিরে যান"),
-            ),
-            ElevatedButton(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
                 onPressed: () {
-                  _saveData();
+                  BlocProvider.of<TothoBloc>(context).add(const AddressEvent(value: 2));
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
-                ),
-                child: const CustomText(
-                  text: "সংরক্ষন করুন",
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ))
-          ],
-        )
-      ],
+                child: const CustomText(text: "তালিকায় ফিরে যান"),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    if(_formKey.currentState!.validate()) {
+                      _saveData(provider: holdingEntryProvider);
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
+                  ),
+                  child: const CustomText(
+                    text: "সংরক্ষন করুন",
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ))
+            ],
+          )
+        ],
+      ),
     );
   }
 
-  void _saveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(StorageConstants.electricityState, selectedElectricityState!.value);
-    prefs.setString(StorageConstants.sanitationState, selectedSanitationCondition!.value);
-    prefs.setString(StorageConstants.fiscalYear, selectedTaxPaidYear!.value);
-    prefs.setString(StorageConstants.totalRoom, noOfHouseController.text.trim());
+  void _saveData({required HoldingEntryProvider provider}) async {
+    provider.updateHoldingEntryRequest(electricityState: selectedElectricityState!.key);
+    provider.updateHoldingEntryRequest(sanitationState: selectedSanitationCondition!.key);
+    provider.updateHoldingEntryRequest(fiscalYear: selectedTaxPaidYear!.key);
+    provider.updateHoldingEntryRequest(totalRoom:  noOfHouseController.text.trim());
     setState(() {});
     BlocProvider.of<TothoBloc>(context).add(const FamilyInformationEvent(value: 4));
   }

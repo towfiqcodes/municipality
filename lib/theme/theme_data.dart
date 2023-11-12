@@ -180,7 +180,7 @@ class ThemeConfig {
         background: ColorConstants.lightScaffoldBackgroundColor,
         cardBackground: ColorConstants.secondaryAppColor,
         primaryText: Colors.black,
-        secondaryText: Colors.white,
+        secondaryText: Colors.black,
         accentColor: ColorConstants.secondaryAppColor,
         divider: ColorConstants.secondaryAppColor,
         buttonBackground: Colors.black38,

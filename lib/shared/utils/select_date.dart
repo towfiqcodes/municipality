@@ -7,8 +7,8 @@ Future<DateTime?> selectDate(BuildContext context,
     context: context,
     initialEntryMode: DatePickerEntryMode.calendarOnly,
     initialDate: initialDate ?? DateTime.now(),
-    firstDate: firstDate ?? DateTime.now(),
-    lastDate: lastDate ?? DateTime(DateTime.now().year + 10),
+    firstDate: firstDate ?? DateTime(DateTime.now().year-100),
+    lastDate: lastDate ?? DateTime.now(),
     builder: (context, child) {
       return Theme(
         data: Theme.of(context).copyWith(

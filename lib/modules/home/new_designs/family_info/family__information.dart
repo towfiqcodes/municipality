@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../models/get_system/get_system_config_response.dart';
+import '../../../../providers/holding_entry_provider.dart';
 import '../../../../shared/constants/storage.dart';
 import '../../../../shared/widgets/custom_text.dart';
+import '../dropdown_item_model.dart';
 import 'family_info_model.dart';
 
 class FamilyInformation extends StatefulWidget {
@@ -19,11 +21,22 @@ class FamilyInformation extends StatefulWidget {
 
 class _FamilyInformationState extends State<FamilyInformation> {
   List<FamilyInformationModel> familyInfoList = [];
+  List<DropdownItemModel> relations = [];
 
   @override
   void initState() {
+    mapDataToList();
     addDefaultField();
     super.initState();
+  }
+
+  void mapDataToList() {
+    relations = widget.data.relation!.entries
+        .map((entry) => DropdownItemModel(entry.key, entry.value))
+        .toList();
+    setState(() {
+
+    });
   }
 
   addDefaultField() async {
@@ -36,7 +49,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
     } else {
       familyInfoList = FamilyInformationModel.decode(familyInfo);
     }
-    for(var info in familyInfoList) {
+    for (var info in familyInfoList) {
       print(info);
     }
     setState(() {});
@@ -182,7 +195,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
             ),
             ElevatedButton(
               onPressed: () {
-                for(var info in familyInfoList) {
+                for (var info in familyInfoList) {
                   print(info);
                 }
                 _saveData();
@@ -239,7 +252,48 @@ class _FamilyInformationState extends State<FamilyInformation> {
             ),
             height: 50,
             alignment: Alignment.center,
-            child: TextFormField(
+            child: DropdownButtonFormField<DropdownItemModel>(
+              decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(color: Color(0xffCCCCCC), width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(color: Color(0xffCCCCCC), width: 1),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(color: Color(0xffCCCCCC), width: 1),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2)),
+              dropdownColor: Colors.grey.shade200,
+              icon: const Icon(
+                Icons.keyboard_arrow_down_sharp,
+                color: Color(0xff444547),
+                size: 24,
+              ),
+              hint: const CustomText(
+                text: "",
+                color: Colors.black,
+                fontSize: 14,
+              ),
+              items: relations.map<DropdownMenuItem<DropdownItemModel>>((DropdownItemModel value) {
+                return DropdownMenuItem<DropdownItemModel>(
+                  value: value,
+                  child:
+                      CustomText(text: value.value, fontSize: 14, color: const Color(0xff070501)),
+                );
+              }).toList(),
+              isDense: true,
+              isExpanded: true,
+              onChanged: (value) {
+                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
+                    .relation = value!.key;
+                setState(() {});
+              },
+            ),
+            /*child: TextFormField(
               textAlign: TextAlign.center,
               cursorColor: Colors.black,
               style: const TextStyle(
@@ -256,7 +310,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
                     .relation = value;
                 setState(() {});
               },
-            ),
+            ),*/
           ),
         ),
         Expanded(
@@ -284,7 +338,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
               cursorColor: Colors.black,
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.normal, fontSize: 12.5),
-              decoration:  InputDecoration(
+              decoration: InputDecoration(
                   hintText: model.nidNo,
                   hintStyle: const TextStyle(color: Colors.black, fontSize: 13),
                   border: InputBorder.none,
