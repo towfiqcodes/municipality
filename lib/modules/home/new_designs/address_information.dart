@@ -63,12 +63,12 @@ class _AddressInformationState extends State<AddressInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: wordList,
                         selectedValue: selectedWord,
-                        dropdownValidator: (value) {
+                       /* dropdownValidator: (value) {
                           if (selectedWord == null) {
                             return "ওয়ার্ড নির্বাচন করুন";
                           }
                           return null;
-                        },
+                        },*/
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedWord = newValue!;
@@ -80,12 +80,12 @@ class _AddressInformationState extends State<AddressInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: villageList,
                         selectedValue: selectedVillage,
-                        dropdownValidator: (value) {
+                        /*dropdownValidator: (value) {
                           if (selectedVillage == null) {
                             return "গ্রাম নির্বাচন করুন";
                           }
                           return null;
-                        },
+                        },*/
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedVillage = newValue!;
@@ -97,12 +97,12 @@ class _AddressInformationState extends State<AddressInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: postalCodeList,
                         selectedValue: selectedPostalCode,
-                        dropdownValidator: (value) {
+                        /*dropdownValidator: (value) {
                           if (selectedPostalCode == null) {
                             return "পোস্টাল কোড নির্বাচন করুন";
                           }
                           return null;
-                        },
+                        },*/
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedPostalCode = newValue!;
@@ -114,12 +114,12 @@ class _AddressInformationState extends State<AddressInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: postOfficeList,
                         selectedValue: selectedPostOffice,
-                        dropdownValidator: (value) {
+                        /*dropdownValidator: (value) {
                           if (selectedPostOffice == null) {
                             return "ডাকঘর নির্বাচন করুন";
                           }
                           return null;
-                        },
+                        },*/
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedPostOffice = newValue!;

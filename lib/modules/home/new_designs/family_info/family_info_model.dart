@@ -1,49 +1,49 @@
-import 'dart:convert';
-
 class FamilyInformationModel {
-  String id;
-  String name;
-  String relation;
-  bool isAutistic;
-  String nidNo;
+  String? id;
+  String? name;
+  String? gender;
+  String? disability;
+  String? nid;
 
-  FamilyInformationModel(
-      {required this.id,
-      this.name = "",
-      this.relation = "",
-      this.isAutistic = false,
-      this.nidNo = ""});
+  FamilyInformationModel({
+    this.id,
+    this.name,
+    this.gender,
+    this.disability,
+    this.nid,
+  });
+
+  FamilyInformationModel copyWith({
+    String? id,
+    String? name,
+    String? gender,
+    String? disability,
+    String? nid,
+  }) =>
+      FamilyInformationModel(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        gender: gender ?? this.gender,
+        disability: disability ?? this.disability,
+        nid: nid ?? this.nid,
+      );
+
+  factory FamilyInformationModel.fromJson(Map<String, dynamic> json) => FamilyInformationModel(
+    name: json["name"],
+    gender: json["gender"],
+    disability: json["disability"],
+    nid: json["nid"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "gender": gender,
+    "disability": disability,
+    "nid": nid,
+  };
 
   @override
   String toString() {
-    return 'FamilyInformationModel{id: $id, name: $name, relation: $relation, isAutistic: $isAutistic, nidNo: $nidNo}';
+    return 'FamilyInformationModel{id: $id, name: $name, gender: $gender, disability: $disability, nid: $nid}';
   }
-
-  factory FamilyInformationModel.fromJson(Map<String, dynamic> jsonData) {
-    return FamilyInformationModel(
-        id: jsonData['id'],
-        name: jsonData['name'],
-        relation: jsonData['relation'],
-        isAutistic: jsonData['isAutistic'],
-        nidNo: jsonData['nidNo']);
-  }
-
-  static Map<String, dynamic> toMap(FamilyInformationModel model) => {
-        'id': model.id,
-        'name': model.name,
-        'relation': model.relation,
-        'isAutistic': model.isAutistic,
-        'nidNo': model.nidNo
-      };
-
-  static String encode(List<FamilyInformationModel> familyInformationModelList) => json.encode(
-        familyInformationModelList
-            .map<Map<String, dynamic>>((music) => FamilyInformationModel.toMap(music))
-            .toList(),
-      );
-
-  static List<FamilyInformationModel> decode(String familyInfo) =>
-      (json.decode(familyInfo) as List<dynamic>)
-          .map<FamilyInformationModel>((item) => FamilyInformationModel.fromJson(item))
-          .toList();
 }

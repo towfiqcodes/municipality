@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:Pourosova/modules/home/new_designs/family_info/family_info_model.dart';
+
 HoldingEntryRequest holdingEntryRequestFromJson(String str) => HoldingEntryRequest.fromJson(json.decode(str));
 
 String holdingEntryRequestToJson(HoldingEntryRequest data) => json.encode(data.toJson());
@@ -49,6 +51,7 @@ class HoldingEntryRequest {
   String? width;
   String? occupation;
   String? fiscalYear;
+  List<FamilyInformationModel>? child;
 
   HoldingEntryRequest({
     this.holdingType,
@@ -95,6 +98,7 @@ class HoldingEntryRequest {
     this.width,
     this.occupation,
     this.fiscalYear,
+    this.child,
   });
 
   HoldingEntryRequest copyWith({
@@ -142,6 +146,7 @@ class HoldingEntryRequest {
     String? width,
     String? occupation,
     String? fiscalYear,
+    List<FamilyInformationModel>? child,
   }) =>
       HoldingEntryRequest(
         holdingType: holdingType ?? this.holdingType,
@@ -188,6 +193,7 @@ class HoldingEntryRequest {
         width: width ?? this.width,
         occupation: occupation ?? this.occupation,
         fiscalYear: fiscalYear ?? this.fiscalYear,
+        child: child ?? this.child,
       );
 
   factory HoldingEntryRequest.fromJson(Map<String, dynamic> json) => HoldingEntryRequest(
@@ -235,6 +241,7 @@ class HoldingEntryRequest {
     width: json["width"],
     occupation: json["occupation"],
     fiscalYear: json["fiscalYear"],
+    child: json["child"] == null ? [] : List<FamilyInformationModel>.from(json["child"]!.map((x) => FamilyInformationModel.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -282,10 +289,11 @@ class HoldingEntryRequest {
     "width": width,
     "occupation": occupation,
     "fiscalYear": fiscalYear,
+    "child": child == null ? [] : List<dynamic>.from(child!.map((x) => x.toJson())),
   };
 
   @override
   String toString() {
-    return 'HoldingEntryRequest{holdingType: $holdingType, isNewHolding: $isNewHolding, name: $name, guardianType: $guardianType, guardianName: $guardianName, guardianMotherName: $guardianMotherName, gender: $gender, maritalStatus: $maritalStatus, dateOfBirth: $dateOfBirth, identityType: $identityType, identityNumber: $identityNumber, mobile: $mobile, religion: $religion, familyType: $familyType, familyMemberMale: $familyMemberMale, familyMemberFemale: $familyMemberFemale, registrationFee: $registrationFee, paymentType: $paymentType, allowance: $allowance, allowanceDescription: $allowanceDescription, disabilityStatus: $disabilityStatus, freedomFighterStatus: $freedomFighterStatus, waterConnectivityStatus: $waterConnectivityStatus, numberOfBirthCertificate: $numberOfBirthCertificate, annualTax: $annualTax, isGovernmentHolding: $isGovernmentHolding, govtOfficeName: $govtOfficeName, govtOfficerName: $govtOfficerName, govtOfficerMobileNo: $govtOfficerMobileNo, govtOfficeLength: $govtOfficeLength, govtOfficeWidth: $govtOfficeWidth, holdingNo: $holdingNo, wardNo: $wardNo, village: $village, postCode: $postCode, postOffice: $postOffice, electricityState: $electricityState, sanitationState: $sanitationState, houseType: $houseType, totalRoom: $totalRoom, length: $length, width: $width, occupation: $occupation, fiscalYear: $fiscalYear}';
+    return 'HoldingEntryRequest{holdingType: $holdingType, isNewHolding: $isNewHolding, name: $name, guardianType: $guardianType, guardianName: $guardianName, guardianMotherName: $guardianMotherName, gender: $gender, maritalStatus: $maritalStatus, dateOfBirth: $dateOfBirth, identityType: $identityType, identityNumber: $identityNumber, mobile: $mobile, religion: $religion, familyType: $familyType, familyMemberMale: $familyMemberMale, familyMemberFemale: $familyMemberFemale, registrationFee: $registrationFee, paymentType: $paymentType, allowance: $allowance, allowanceDescription: $allowanceDescription, disabilityStatus: $disabilityStatus, freedomFighterStatus: $freedomFighterStatus, waterConnectivityStatus: $waterConnectivityStatus, numberOfBirthCertificate: $numberOfBirthCertificate, annualTax: $annualTax, isGovernmentHolding: $isGovernmentHolding, govtOfficeName: $govtOfficeName, govtOfficerName: $govtOfficerName, govtOfficerMobileNo: $govtOfficerMobileNo, govtOfficeLength: $govtOfficeLength, govtOfficeWidth: $govtOfficeWidth, holdingNo: $holdingNo, wardNo: $wardNo, village: $village, postCode: $postCode, postOffice: $postOffice, electricityState: $electricityState, sanitationState: $sanitationState, houseType: $houseType, totalRoom: $totalRoom, length: $length, width: $width, occupation: $occupation, fiscalYear: $fiscalYear, child: $child}';
   }
 }

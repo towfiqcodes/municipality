@@ -126,12 +126,12 @@ class _OtherInformationState extends State<OtherInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: houseTypes,
                         selectedValue: selectedHouseType,
-                        dropdownValidator: (value) {
+                        /*dropdownValidator: (value) {
                           if (selectedHouseType == null) {
                             return "বাড়ির ধরন নির্বাচন করুন";
                           }
                           return null;
-                        },
+                        },*/
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedHouseType = newValue!;
@@ -153,12 +153,12 @@ class _OtherInformationState extends State<OtherInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: occupationList,
                         selectedValue: selectedOccupation,
-                        dropdownValidator: (value) {
+                        /*dropdownValidator: (value) {
                           if (selectedOccupation == null) {
                             return "পেশা নির্বাচন করুন";
                           }
                           return null;
-                        },
+                        },*/
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedOccupation = newValue!;

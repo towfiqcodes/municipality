@@ -1,4 +1,5 @@
 import 'package:Pourosova/models/request/holding_entry_request.dart';
+import 'package:Pourosova/modules/home/new_designs/family_info/family_info_model.dart';
 import 'package:flutter/material.dart';
 
 class HoldingEntryProvider extends ChangeNotifier {
@@ -51,8 +52,9 @@ class HoldingEntryProvider extends ChangeNotifier {
     String? width,
     String? occupation,
     String? fiscalYear,
+    List<FamilyInformationModel>? child,
   }) {
-    _holdingEntryRequest = _holdingEntryRequest!.copyWith(
+    _holdingEntryRequest = _holdingEntryRequest.copyWith(
       holdingType: holdingType,
       isNewHolding: isNewHolding,
       name: name,
@@ -97,6 +99,7 @@ class HoldingEntryProvider extends ChangeNotifier {
       width: width,
       occupation: occupation,
       fiscalYear: fiscalYear,
+      child: child
     );
     notifyListeners();
   }
