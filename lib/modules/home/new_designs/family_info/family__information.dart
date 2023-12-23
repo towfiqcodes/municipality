@@ -28,6 +28,7 @@ class FamilyInformation extends StatefulWidget {
 class _FamilyInformationState extends State<FamilyInformation> {
   List<FamilyInformationModel> familyInfoList = [];
   List<DropdownItemModel> relations = [];
+  bool _loading = false;
 
   @override
   void initState() {
@@ -197,7 +198,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
               },
               child: const CustomText(text: "তালিকায় ফিরে যান"),
             ),
-            ElevatedButton(
+            _loading? const CircularProgressIndicator(): ElevatedButton(
               onPressed: () {
                 for (var info in familyInfoList) {
                   print(info);
@@ -208,7 +209,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
                 backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
               ),
               child: const CustomText(
-                text: "সংরক্ষন করুন",
+                text: "তৈরী করুন",
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
               ),
@@ -346,16 +347,22 @@ class _FamilyInformationState extends State<FamilyInformation> {
   }
 
   void _saveData({required HoldingEntryProvider provider}) async {
+    setState(() {
+      _loading = true;
+    });
     provider.updateHoldingEntryRequest(child: familyInfoList);
     provider.updateHoldingEntryRequest(planApprovalStatus: "1");
     developer.log(jsonEncode(provider.holdingEntryRequest.toJson()));
 
     var response = await provider.createNewHouseHolding();
+    setState(() {
+      _loading = false;
+    });
 
     if (response?.statusCode == 200) {
       if (jsonDecode(response!.body)["error"] == false) {
         Fluttertoast.showToast(msg: "Data stored successfully!");
-        Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
       } else {
         Fluttertoast.showToast(msg: "Something went wrong!");
       }

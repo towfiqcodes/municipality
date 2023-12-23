@@ -63,7 +63,7 @@ class _TothoScreenState extends State<TothoScreen> {
           child: Column(
             children: [
               //image capture
-              if (page == 1)
+              /*if (page == 1)
                 Container(
                   decoration: BoxDecoration(
                     boxShadow: [
@@ -98,7 +98,7 @@ class _TothoScreenState extends State<TothoScreen> {
                       ],
                     ),
                   ),
-                ),
+                ),*/
               const SizedBox(
                 height: 10,
               ),
@@ -151,7 +151,7 @@ class _TothoScreenState extends State<TothoScreen> {
       required int type}) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
+        /*onTap: () {
           setState(() {
             page = type;
           });
@@ -170,7 +170,7 @@ class _TothoScreenState extends State<TothoScreen> {
           if (page == 4) {
             BlocProvider.of<TothoBloc>(context).add(const FamilyInformationEvent(value: 4));
           }
-        },
+        },*/
         child: Container(
           height: MediaQuery.of(context).size.width * .23,
           padding: const EdgeInsets.symmetric(horizontal: 10),
