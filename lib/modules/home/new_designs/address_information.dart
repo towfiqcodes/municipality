@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:Pourosova/models/response/village_response.dart';
 import 'package:Pourosova/providers/holding_entry_provider.dart';
 import 'package:Pourosova/shared/constants/constants.dart';
 import 'package:Pourosova/shared/utils/common_widget.dart';
@@ -27,10 +30,71 @@ class _AddressInformationState extends State<AddressInformation> {
   DropdownItemModel? selectedPostalCode;
   DropdownItemModel? selectedPostOffice;
   List<DropdownItemModel> wordList = [];
-  List<DropdownItemModel> villageList = [];
+  // List<DropdownItemModel> villageList = [];
   List<DropdownItemModel> postalCodeList = [];
-  List<DropdownItemModel> postOfficeList = [];
+  // List<DropdownItemModel> postOfficeList = [];
   final holdingNoController = TextEditingController();
+
+  void mapDataToList() {
+    wordList = widget.data.wardNo!.entries
+        .map((entry) => DropdownItemModel(entry.key, entry.value))
+        .toList();
+
+    postalCodeList = widget.data.postCode!.entries
+        .map((entry) => DropdownItemModel(entry.key, entry.value))
+        .toList();
+  }
+
+  @override
+  void initState() {
+    setDropdownValues(provider: context.read<HoldingEntryProvider>());
+    super.initState();
+  }
+
+  void setDropdownValues({required HoldingEntryProvider provider}) async {
+
+    mapDataToList();
+
+    // holding no
+    holdingNoController.text = provider.holdingEntryRequest.houseHoldingAddress?.holdingNo ?? "";
+
+    // word no
+    if (provider.holdingEntryRequest.houseHoldingAddress?.wardNo != null) {
+      selectedWord = wordList.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.wardNo,
+      );
+    } else {
+      selectedWord = wordList.isNotEmpty ? wordList[0] : null;
+    }
+
+    // village
+    if (provider.holdingEntryRequest.houseHoldingAddress?.village != null) {
+      selectedVillage = provider.villageList.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.village,
+      );
+    } else {
+      selectedVillage = provider.villageList.isNotEmpty ? provider.villageList[0] : null;
+    }
+
+    // postal code
+    if (provider.holdingEntryRequest.houseHoldingAddress?.postCode != null) {
+      selectedPostalCode = postalCodeList.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.postCode,
+      );
+    } else {
+      selectedPostalCode = postalCodeList.isNotEmpty ? postalCodeList[0] : null;
+    }
+
+    // post office
+    if (provider.holdingEntryRequest.houseHoldingAddress?.postOffice != null) {
+      selectedPostOffice = provider.postOfficeList.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.postOffice,
+      );
+    } else {
+      selectedPostalCode = postalCodeList.isNotEmpty ? postalCodeList[0] : null;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,29 +127,32 @@ class _AddressInformationState extends State<AddressInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: wordList,
                         selectedValue: selectedWord,
-                       /* dropdownValidator: (value) {
+                        dropdownValidator: (value) {
                           if (selectedWord == null) {
                             return "ওয়ার্ড নির্বাচন করুন";
                           }
                           return null;
-                        },*/
-                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                        },
+                        dropdownOnChanged: (DropdownItemModel? newValue) async {
                           setState(() {
+                            holdingEntryProvider.villageList = [];
+                            selectedVillage = null;
                             selectedWord = newValue!;
                           });
+                          await _getVillageList(context);
                         }),
                     singleFormField(
                         headline: "গ্রাম",
                         isDropdownList: true,
                         hint: "নির্বাচন করুন",
-                        dropdownList: villageList,
+                        dropdownList: holdingEntryProvider.villageList,
                         selectedValue: selectedVillage,
-                        /*dropdownValidator: (value) {
+                        dropdownValidator: (value) {
                           if (selectedVillage == null) {
                             return "গ্রাম নির্বাচন করুন";
                           }
                           return null;
-                        },*/
+                        },
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedVillage = newValue!;
@@ -97,29 +164,32 @@ class _AddressInformationState extends State<AddressInformation> {
                         hint: "নির্বাচন করুন",
                         dropdownList: postalCodeList,
                         selectedValue: selectedPostalCode,
-                        /*dropdownValidator: (value) {
+                        dropdownValidator: (value) {
                           if (selectedPostalCode == null) {
                             return "পোস্টাল কোড নির্বাচন করুন";
                           }
                           return null;
-                        },*/
-                        dropdownOnChanged: (DropdownItemModel? newValue) {
+                        },
+                        dropdownOnChanged: (DropdownItemModel? newValue) async {
                           setState(() {
+                            holdingEntryProvider.postOfficeList = [];
+                            selectedPostOffice = null;
                             selectedPostalCode = newValue!;
                           });
+                          await _getPostOfficeList(context);
                         }),
                     singleFormField(
                         headline: "ডাকঘর",
                         isDropdownList: true,
                         hint: "নির্বাচন করুন",
-                        dropdownList: postOfficeList,
+                        dropdownList: holdingEntryProvider.postOfficeList,
                         selectedValue: selectedPostOffice,
-                        /*dropdownValidator: (value) {
+                        dropdownValidator: (value) {
                           if (selectedPostOffice == null) {
                             return "ডাকঘর নির্বাচন করুন";
                           }
                           return null;
-                        },*/
+                        },
                         dropdownOnChanged: (DropdownItemModel? newValue) {
                           setState(() {
                             selectedPostOffice = newValue!;
@@ -158,7 +228,28 @@ class _AddressInformationState extends State<AddressInformation> {
         ],
       ),
     );
-    ;
+  }
+
+  Future<void> _getVillageList(BuildContext context) async {
+    showLoadingDialog(context);
+    var response = await context.read<HoldingEntryProvider>().getWordWiseVillages(wordNo: selectedWord!.key);
+    Navigator.pop(context);
+    if(response?.statusCode == 200) {
+     VillageResponse villageResponse = VillageResponse.fromJson(jsonDecode(response!.body));
+     context.read<HoldingEntryProvider>().villageList = villageResponse.data!.entries.map((entry) => DropdownItemModel(entry.key, entry.value.name!)).toList();
+     setState(() {});
+    }
+  }
+
+  Future<void> _getPostOfficeList(BuildContext context) async {
+    showLoadingDialog(context);
+    var response = await context.read<HoldingEntryProvider>().getPostOffices(postalCode: selectedPostalCode!.key);
+    Navigator.pop(context);
+    if(response?.statusCode == 200) {
+      VillageResponse villageResponse = VillageResponse.fromJson(jsonDecode(response!.body));
+      context.read<HoldingEntryProvider>().postOfficeList = villageResponse.data!.entries.map((entry) => DropdownItemModel(entry.key, entry.value.name!)).toList();
+      setState(() {});
+    }
   }
 
   void _saveData({required HoldingEntryProvider provider}) async {

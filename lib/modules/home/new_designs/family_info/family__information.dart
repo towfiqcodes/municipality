@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:Pourosova/blocs/totho/totho_bloc.dart';
+import 'package:Pourosova/modules/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -274,7 +278,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
                 size: 24,
               ),
               hint: const CustomText(
-                text: "" ,
+                text: "",
                 color: Colors.black,
                 fontSize: 14,
               ),
@@ -303,10 +307,10 @@ class _FamilyInformationState extends State<FamilyInformation> {
             height: 50,
             alignment: Alignment.center,
             child: Checkbox(
-              value: model.disability == "1"? true : false,
+              value: model.disability == "1" ? true : false,
               onChanged: (value) {
                 familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .disability = value == true? "1" : "2";
+                    .disability = value == true ? "1" : "2";
                 setState(() {});
               },
             ),
@@ -330,8 +334,8 @@ class _FamilyInformationState extends State<FamilyInformation> {
                   disabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none),
               onChanged: (value) {
-                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .nid = value;
+                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)].nid =
+                    value;
                 setState(() {});
               },
             ),
@@ -343,6 +347,24 @@ class _FamilyInformationState extends State<FamilyInformation> {
 
   void _saveData({required HoldingEntryProvider provider}) async {
     provider.updateHoldingEntryRequest(child: familyInfoList);
-    developer.log(provider.holdingEntryRequest.toString());
+    provider.updateHoldingEntryRequest(planApprovalStatus: "1");
+    developer.log(jsonEncode(provider.holdingEntryRequest.toJson()));
+
+    var response = await provider.createNewHouseHolding();
+
+    if (response?.statusCode == 200) {
+      if (jsonDecode(response!.body)["error"] == false) {
+        Fluttertoast.showToast(msg: "Data stored successfully!");
+        Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      } else {
+        Fluttertoast.showToast(msg: "Something went wrong!");
+      }
+    } else if (response?.statusCode == 401) {
+      Fluttertoast.showToast(msg: "Session timeout. Please login again!");
+    } else {
+      Fluttertoast.showToast(msg: "Something went wrong!");
+    }
+
+    developer.log(response?.body ?? "");
   }
 }

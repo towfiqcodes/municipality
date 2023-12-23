@@ -25,9 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
 
-  final _emailController = TextEditingController(text: "jamalpur-admin@pourashava.org");
+  final _emailController = TextEditingController(text: "dhanbari-admin@pourashava.org");
 
-  final _passwordController = TextEditingController(text: "Raozan-1");
+  final _passwordController = TextEditingController(text: "Dhanbari\$%67");
 
   final _idNumberController = TextEditingController();
 
