@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:Pourosova/blocs/totho/totho_bloc.dart';
+import 'package:Pourosova/modules/auth/auth_screen.dart';
+import 'package:Pourosova/modules/auth/login_screen.dart';
 import 'package:Pourosova/modules/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -194,26 +196,29 @@ class _FamilyInformationState extends State<FamilyInformation> {
           children: [
             TextButton(
               onPressed: () {
+                provider.updateHoldingEntryRequest(child: familyInfoList);
                 BlocProvider.of<TothoBloc>(context).add(const OthersEvent(value: 3));
               },
               child: const CustomText(text: "তালিকায় ফিরে যান"),
             ),
-            _loading? const CircularProgressIndicator(): ElevatedButton(
-              onPressed: () {
-                for (var info in familyInfoList) {
-                  print(info);
-                }
-                _saveData(provider: provider);
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
-              ),
-              child: const CustomText(
-                text: "তৈরী করুন",
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            )
+            _loading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+                    onPressed: () {
+                      for (var info in familyInfoList) {
+                        print(info);
+                      }
+                      _saveData(provider: provider);
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
+                    ),
+                    child: const CustomText(
+                      text: "তৈরী করুন",
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  )
           ],
         ),
       ],
@@ -276,18 +281,19 @@ class _FamilyInformationState extends State<FamilyInformation> {
               icon: const Icon(
                 Icons.keyboard_arrow_down_sharp,
                 color: Color(0xff444547),
-                size: 24,
+                size: 12,
               ),
               hint: const CustomText(
                 text: "",
                 color: Colors.black,
-                fontSize: 14,
+                fontSize: 10,
               ),
+              padding: EdgeInsets.zero,
               items: relations.map<DropdownMenuItem<DropdownItemModel>>((DropdownItemModel value) {
                 return DropdownMenuItem<DropdownItemModel>(
                   value: value,
                   child:
-                      CustomText(text: value.value, fontSize: 14, color: const Color(0xff070501)),
+                      CustomText(text: value.value, fontSize: 10, color: const Color(0xff070501)),
                 );
               }).toList(),
               isDense: true,
@@ -362,12 +368,19 @@ class _FamilyInformationState extends State<FamilyInformation> {
     if (response?.statusCode == 200) {
       if (jsonDecode(response!.body)["error"] == false) {
         Fluttertoast.showToast(msg: "Data stored successfully!");
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context, MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
       } else {
         Fluttertoast.showToast(msg: "Something went wrong!");
       }
     } else if (response?.statusCode == 401) {
       Fluttertoast.showToast(msg: "Session timeout. Please login again!");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const LoginScreen(
+                    didSessionTimedOut: true,
+                  )));
     } else {
       Fluttertoast.showToast(msg: "Something went wrong!");
     }

@@ -308,6 +308,10 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
     } else {
       selectedReligion = religions.isNotEmpty ? religions[0] : null;
     }
+    if (provider.holdingEntryRequest.houseHoldingRegistrations?.isGovernmentHolding != null) {
+      selectedIsGovtBuilding =
+          provider.holdingEntryRequest.houseHoldingRegistrations?.isGovernmentHolding;
+    }
 
     // govt office name
     govtOfficeNameController.text =
@@ -759,7 +763,7 @@ class _KhanaProdhanInformationState extends State<KhanaProdhanInformation> {
                         isExpanded: true,
                         onChanged: (bool? newValue) {
                           setState(() {
-                            selectedIsGovtBuilding = newValue!;
+                            selectedIsGovtBuilding = newValue ?? false;
                           });
                           holdingEntryProvider.updateHoldingEntryRequest(isGovernmentHolding: selectedIsGovtBuilding);
                         },

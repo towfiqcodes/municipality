@@ -63,8 +63,6 @@ class _AddressInformationState extends State<AddressInformation> {
       selectedWord = wordList.firstWhere(
             (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.wardNo,
       );
-    } else {
-      selectedWord = wordList.isNotEmpty ? wordList[0] : null;
     }
 
     // village
@@ -72,8 +70,6 @@ class _AddressInformationState extends State<AddressInformation> {
       selectedVillage = provider.villageList.firstWhere(
             (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.village,
       );
-    } else {
-      selectedVillage = provider.villageList.isNotEmpty ? provider.villageList[0] : null;
     }
 
     // postal code
@@ -81,8 +77,6 @@ class _AddressInformationState extends State<AddressInformation> {
       selectedPostalCode = postalCodeList.firstWhere(
             (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.postCode,
       );
-    } else {
-      selectedPostalCode = postalCodeList.isNotEmpty ? postalCodeList[0] : null;
     }
 
     // post office
@@ -90,8 +84,6 @@ class _AddressInformationState extends State<AddressInformation> {
       selectedPostOffice = provider.postOfficeList.firstWhere(
             (element) => element.key == provider.holdingEntryRequest.houseHoldingAddress?.postOffice,
       );
-    } else {
-      selectedPostalCode = postalCodeList.isNotEmpty ? postalCodeList[0] : null;
     }
     setState(() {});
   }
