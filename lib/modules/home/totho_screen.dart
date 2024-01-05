@@ -1,6 +1,7 @@
 import 'package:Pourosova/blocs/totho/totho_bloc.dart';
 import 'package:Pourosova/modules/home/new_designs/address_information.dart';
 import 'package:Pourosova/modules/home/new_designs/khana_prodhan_information.dart';
+import 'package:Pourosova/shared/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/get_system/get_system_config_response.dart';
@@ -48,7 +49,7 @@ class _TothoScreenState extends State<TothoScreen> {
           });
         }
       },
-      child: data != null ? _buildWidget(context, data) : const SizedBox(),
+      child: _buildWidget(context, data),
     );
   }
 
@@ -56,14 +57,15 @@ class _TothoScreenState extends State<TothoScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: CommonWidget.appBar(context, widget.title!, Icons.arrow_back_ios, Colors.green),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-          child: Column(
-            children: [
-              //image capture
-              if (page == 1)
+        body: data != null
+            ? Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
+                child: Column(
+                  children: [
+                    //image capture
+                    /*if (page == 1)
                 Container(
                   decoration: BoxDecoration(
                     boxShadow: [
@@ -98,7 +100,7 @@ class _TothoScreenState extends State<TothoScreen> {
                       ],
                     ),
                   ),
-                ),
+                ),*/
               const SizedBox(
                 height: 10,
               ),
@@ -129,17 +131,22 @@ class _TothoScreenState extends State<TothoScreen> {
               Expanded(
                 child: page == 1
                     ? KhanaProdhanInformation(
-                        data: data!,
-                      )
-                    : page == 2
-                        ? AddressInformation(data: data!)
-                        : page == 3
-                            ? OtherInformation(data: data!)
-                            : FamilyInformation(data: data!),
+                              data: data!,
+                            )
+                          : page == 2
+                              ? AddressInformation(data: data!)
+                              : page == 3
+                                  ? OtherInformation(data: data!)
+                                  : FamilyInformation(data: data!),
+                    ),
+                  ],
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.primaryColor,
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -151,7 +158,7 @@ class _TothoScreenState extends State<TothoScreen> {
       required int type}) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
+        /*onTap: () {
           setState(() {
             page = type;
           });
@@ -170,7 +177,7 @@ class _TothoScreenState extends State<TothoScreen> {
           if (page == 4) {
             BlocProvider.of<TothoBloc>(context).add(const FamilyInformationEvent(value: 4));
           }
-        },
+        },*/
         child: Container(
           height: MediaQuery.of(context).size.width * .23,
           padding: const EdgeInsets.symmetric(horizontal: 10),

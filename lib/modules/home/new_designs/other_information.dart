@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +38,7 @@ class _OtherInformationState extends State<OtherInformation> {
 
   @override
   void initState() {
-    setDropdownValue();
+    setDropdownValue(provider: context.read<HoldingEntryProvider>());
     super.initState();
   }
 
@@ -49,37 +51,69 @@ class _OtherInformationState extends State<OtherInformation> {
         .map((entry) => DropdownItemModel(entry.key, entry.value))
         .toList();
 
+    houseTypes = widget.data.houseType!.entries
+        .map((entry) => DropdownItemModel(entry.key, entry.value))
+        .toList();
+
     taxPaidYears = widget.data.fiscalYear!.entries
+        .map((entry) => DropdownItemModel(entry.key, entry.value))
+        .toList();
+
+    occupationList = widget.data.occupation!.entries
         .map((entry) => DropdownItemModel(entry.key, entry.value))
         .toList();
   }
 
-  void setDropdownValue() async {
-    final prefs = await SharedPreferences.getInstance();
+  void setDropdownValue({required HoldingEntryProvider provider}) async {
     mapDataToList();
 
     // electricity state
-    if (prefs.getString(StorageConstants.electricityState) != null) {
+    if (provider.holdingEntryRequest.houseHoldingOtherInfo?.electricityState != null) {
       selectedElectricityState = electricityStates.firstWhere(
-          (element) => element.value == prefs.getString(StorageConstants.electricityState));
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingOtherInfo?.electricityState,
+      );
     } else {
       selectedElectricityState = electricityStates.isNotEmpty ? electricityStates[0] : null;
     }
 
     // sanitation state
-    if (prefs.getString(StorageConstants.sanitationState) != null) {
+    if (provider.holdingEntryRequest.houseHoldingOtherInfo?.sanitationState != null) {
       selectedSanitationCondition = sanitationConditions.firstWhere(
-          (element) => element.value == prefs.getString(StorageConstants.sanitationState));
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingOtherInfo?.sanitationState,
+      );
     } else {
-      selectedSanitationCondition =
-          sanitationConditions.isNotEmpty ? sanitationConditions[0] : null;
+      selectedSanitationCondition = sanitationConditions.isNotEmpty ? sanitationConditions[0] : null;
+    }
+
+    // house type
+    if (provider.holdingEntryRequest.houseHoldingOtherInfo?.houseType != null) {
+      selectedHouseType = houseTypes.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingOtherInfo?.houseType,
+      );
+    } else {
+      selectedHouseType = houseTypes.isNotEmpty ? houseTypes[0] : null;
     }
 
     // fiscal year
-    selectedTaxPaidYear = taxPaidYears.isNotEmpty ? taxPaidYears[0] : null;
+    if (provider.holdingEntryRequest.houseHoldingOtherInfo?.fiscalYear != null) {
+      selectedTaxPaidYear = taxPaidYears.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingOtherInfo?.fiscalYear,
+      );
+    } else {
+      selectedTaxPaidYear = taxPaidYears.isNotEmpty ? taxPaidYears[0] : null;
+    }
+
+    // occupation
+    if (provider.holdingEntryRequest.houseHoldingOtherInfo?.occupation != null) {
+      selectedOccupation = occupationList.firstWhere(
+            (element) => element.key == provider.holdingEntryRequest.houseHoldingOtherInfo?.occupation,
+      );
+    } else {
+      selectedOccupation = occupationList.isNotEmpty ? occupationList[0] : null;
+    }
 
     // total house
-    noOfHouseController.text = prefs.getString(StorageConstants.totalRoom) ?? "";
+    noOfHouseController.text = provider.holdingEntryRequest.houseHoldingOtherInfo?.totalRoom ?? "";
     setState(() {});
   }
 
@@ -221,7 +255,10 @@ class _OtherInformationState extends State<OtherInformation> {
     provider.updateHoldingEntryRequest(sanitationState: selectedSanitationCondition!.key);
     provider.updateHoldingEntryRequest(fiscalYear: selectedTaxPaidYear!.key);
     provider.updateHoldingEntryRequest(totalRoom:  noOfHouseController.text.trim());
+    provider.updateHoldingEntryRequest(occupation:  selectedOccupation!.key);
+    provider.updateHoldingEntryRequest(houseType:  selectedHouseType!.key);
     setState(() {});
+    log(provider.holdingEntryRequest.toString());
     BlocProvider.of<TothoBloc>(context).add(const FamilyInformationEvent(value: 4));
   }
 }

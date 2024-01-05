@@ -1,10 +1,4 @@
-import 'dart:convert';
-
-HoldingEntryRequest holdingEntryRequestFromJson(String str) => HoldingEntryRequest.fromJson(json.decode(str));
-
-String holdingEntryRequestToJson(HoldingEntryRequest data) => json.encode(data.toJson());
-
-class HoldingEntryRequest {
+class HouseHoldingRegistrations {
   String? holdingType;
   bool? isNewHolding;
   String? name;
@@ -36,21 +30,8 @@ class HoldingEntryRequest {
   String? govtOfficerMobileNo;
   String? govtOfficeLength;
   String? govtOfficeWidth;
-  String? holdingNo;
-  String? wardNo;
-  String? village;
-  String? postCode;
-  String? postOffice;
-  String? electricityState;
-  String? sanitationState;
-  String? houseType;
-  String? totalRoom;
-  String? length;
-  String? width;
-  String? occupation;
-  String? fiscalYear;
 
-  HoldingEntryRequest({
+  HouseHoldingRegistrations({
     this.holdingType,
     this.isNewHolding,
     this.name,
@@ -82,22 +63,9 @@ class HoldingEntryRequest {
     this.govtOfficerMobileNo,
     this.govtOfficeLength,
     this.govtOfficeWidth,
-    this.holdingNo,
-    this.wardNo,
-    this.village,
-    this.postCode,
-    this.postOffice,
-    this.electricityState,
-    this.sanitationState,
-    this.houseType,
-    this.totalRoom,
-    this.length,
-    this.width,
-    this.occupation,
-    this.fiscalYear,
   });
 
-  HoldingEntryRequest copyWith({
+  HouseHoldingRegistrations copyWith({
     String? holdingType,
     bool? isNewHolding,
     String? name,
@@ -129,21 +97,8 @@ class HoldingEntryRequest {
     String? govtOfficerMobileNo,
     String? govtOfficeLength,
     String? govtOfficeWidth,
-    String? holdingNo,
-    String? wardNo,
-    String? village,
-    String? postCode,
-    String? postOffice,
-    String? electricityState,
-    String? sanitationState,
-    String? houseType,
-    String? totalRoom,
-    String? length,
-    String? width,
-    String? occupation,
-    String? fiscalYear,
   }) =>
-      HoldingEntryRequest(
+      HouseHoldingRegistrations(
         holdingType: holdingType ?? this.holdingType,
         isNewHolding: isNewHolding ?? this.isNewHolding,
         name: name ?? this.name,
@@ -175,22 +130,9 @@ class HoldingEntryRequest {
         govtOfficerMobileNo: govtOfficerMobileNo ?? this.govtOfficerMobileNo,
         govtOfficeLength: govtOfficeLength ?? this.govtOfficeLength,
         govtOfficeWidth: govtOfficeWidth ?? this.govtOfficeWidth,
-        holdingNo: holdingNo ?? this.holdingNo,
-        wardNo: wardNo ?? this.wardNo,
-        village: village ?? this.village,
-        postCode: postCode ?? this.postCode,
-        postOffice: postOffice ?? this.postOffice,
-        electricityState: electricityState ?? this.electricityState,
-        sanitationState: sanitationState ?? this.sanitationState,
-        houseType: houseType ?? this.houseType,
-        totalRoom: totalRoom ?? this.totalRoom,
-        length: length ?? this.length,
-        width: width ?? this.width,
-        occupation: occupation ?? this.occupation,
-        fiscalYear: fiscalYear ?? this.fiscalYear,
       );
 
-  factory HoldingEntryRequest.fromJson(Map<String, dynamic> json) => HoldingEntryRequest(
+  factory HouseHoldingRegistrations.fromJson(Map<String, dynamic> json) => HouseHoldingRegistrations(
     holdingType: json["holdingType"],
     isNewHolding: json["isNewHolding"],
     name: json["name"],
@@ -222,19 +164,6 @@ class HoldingEntryRequest {
     govtOfficerMobileNo: json["govtOfficerMobileNo"],
     govtOfficeLength: json["govtOfficeLength"],
     govtOfficeWidth: json["govtOfficeWidth"],
-    holdingNo: json["holdingNo"],
-    wardNo: json["wardNo"],
-    village: json["village"],
-    postCode: json["postCode"],
-    postOffice: json["postOffice"],
-    electricityState: json["electricityState"],
-    sanitationState: json["sanitationState"],
-    houseType: json["houseType"],
-    totalRoom: json["totalRoom"],
-    length: json["length"],
-    width: json["width"],
-    occupation: json["occupation"],
-    fiscalYear: json["fiscalYear"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -269,23 +198,10 @@ class HoldingEntryRequest {
     "govtOfficerMobileNo": govtOfficerMobileNo,
     "govtOfficeLength": govtOfficeLength,
     "govtOfficeWidth": govtOfficeWidth,
-    "holdingNo": holdingNo,
-    "wardNo": wardNo,
-    "village": village,
-    "postCode": postCode,
-    "postOffice": postOffice,
-    "electricityState": electricityState,
-    "sanitationState": sanitationState,
-    "houseType": houseType,
-    "totalRoom": totalRoom,
-    "length": length,
-    "width": width,
-    "occupation": occupation,
-    "fiscalYear": fiscalYear,
   };
 
   @override
   String toString() {
-    return 'HoldingEntryRequest{holdingType: $holdingType, isNewHolding: $isNewHolding, name: $name, guardianType: $guardianType, guardianName: $guardianName, guardianMotherName: $guardianMotherName, gender: $gender, maritalStatus: $maritalStatus, dateOfBirth: $dateOfBirth, identityType: $identityType, identityNumber: $identityNumber, mobile: $mobile, religion: $religion, familyType: $familyType, familyMemberMale: $familyMemberMale, familyMemberFemale: $familyMemberFemale, registrationFee: $registrationFee, paymentType: $paymentType, allowance: $allowance, allowanceDescription: $allowanceDescription, disabilityStatus: $disabilityStatus, freedomFighterStatus: $freedomFighterStatus, waterConnectivityStatus: $waterConnectivityStatus, numberOfBirthCertificate: $numberOfBirthCertificate, annualTax: $annualTax, isGovernmentHolding: $isGovernmentHolding, govtOfficeName: $govtOfficeName, govtOfficerName: $govtOfficerName, govtOfficerMobileNo: $govtOfficerMobileNo, govtOfficeLength: $govtOfficeLength, govtOfficeWidth: $govtOfficeWidth, holdingNo: $holdingNo, wardNo: $wardNo, village: $village, postCode: $postCode, postOffice: $postOffice, electricityState: $electricityState, sanitationState: $sanitationState, houseType: $houseType, totalRoom: $totalRoom, length: $length, width: $width, occupation: $occupation, fiscalYear: $fiscalYear}';
+    return 'HouseHoldingRegistrations{holdingType: $holdingType, isNewHolding: $isNewHolding, name: $name, guardianType: $guardianType, guardianName: $guardianName, guardianMotherName: $guardianMotherName, gender: $gender, maritalStatus: $maritalStatus, dateOfBirth: $dateOfBirth, identityType: $identityType, identityNumber: $identityNumber, mobile: $mobile, religion: $religion, familyType: $familyType, familyMemberMale: $familyMemberMale, familyMemberFemale: $familyMemberFemale, registrationFee: $registrationFee, paymentType: $paymentType, allowance: $allowance, allowanceDescription: $allowanceDescription, disabilityStatus: $disabilityStatus, freedomFighterStatus: $freedomFighterStatus, waterConnectivityStatus: $waterConnectivityStatus, numberOfBirthCertificate: $numberOfBirthCertificate, annualTax: $annualTax, isGovernmentHolding: $isGovernmentHolding, govtOfficeName: $govtOfficeName, govtOfficerName: $govtOfficerName, govtOfficerMobileNo: $govtOfficerMobileNo, govtOfficeLength: $govtOfficeLength, govtOfficeWidth: $govtOfficeWidth}';
   }
 }

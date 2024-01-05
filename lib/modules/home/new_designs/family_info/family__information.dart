@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:Pourosova/blocs/totho/totho_bloc.dart';
+import 'package:Pourosova/modules/auth/auth_screen.dart';
+import 'package:Pourosova/modules/auth/login_screen.dart';
+import 'package:Pourosova/modules/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../models/get_system/get_system_config_response.dart';
@@ -9,6 +16,7 @@ import '../../../../shared/constants/storage.dart';
 import '../../../../shared/widgets/custom_text.dart';
 import '../dropdown_item_model.dart';
 import 'family_info_model.dart';
+import 'dart:developer' as developer;
 
 class FamilyInformation extends StatefulWidget {
   final GetSystemConfigData data;
@@ -22,6 +30,7 @@ class FamilyInformation extends StatefulWidget {
 class _FamilyInformationState extends State<FamilyInformation> {
   List<FamilyInformationModel> familyInfoList = [];
   List<DropdownItemModel> relations = [];
+  bool _loading = false;
 
   @override
   void initState() {
@@ -34,20 +43,17 @@ class _FamilyInformationState extends State<FamilyInformation> {
     relations = widget.data.relation!.entries
         .map((entry) => DropdownItemModel(entry.key, entry.value))
         .toList();
-    setState(() {
-
-    });
+    setState(() {});
+    developer.log(relations.toString());
   }
 
   addDefaultField() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String familyInfo = prefs.getString(StorageConstants.familyInfo) ?? "";
+    final provider = context.read<HoldingEntryProvider>();
 
-    if (familyInfo == "") {
-      familyInfoList.add(FamilyInformationModel(id: const Uuid().v4()));
+    if (provider.holdingEntryRequest.child == null) {
       familyInfoList.add(FamilyInformationModel(id: const Uuid().v4()));
     } else {
-      familyInfoList = FamilyInformationModel.decode(familyInfo);
+      familyInfoList = provider.holdingEntryRequest.child ?? [];
     }
     for (var info in familyInfoList) {
       print(info);
@@ -57,6 +63,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<HoldingEntryProvider>(context);
     return Column(
       children: [
         Expanded(
@@ -189,26 +196,29 @@ class _FamilyInformationState extends State<FamilyInformation> {
           children: [
             TextButton(
               onPressed: () {
+                provider.updateHoldingEntryRequest(child: familyInfoList);
                 BlocProvider.of<TothoBloc>(context).add(const OthersEvent(value: 3));
               },
               child: const CustomText(text: "তালিকায় ফিরে যান"),
             ),
-            ElevatedButton(
-              onPressed: () {
-                for (var info in familyInfoList) {
-                  print(info);
-                }
-                _saveData();
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
-              ),
-              child: const CustomText(
-                text: "সংরক্ষন করুন",
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            )
+            _loading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+                    onPressed: () {
+                      for (var info in familyInfoList) {
+                        print(info);
+                      }
+                      _saveData(provider: provider);
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(const Color(0xff008000)),
+                    ),
+                    child: const CustomText(
+                      text: "তৈরী করুন",
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  )
           ],
         ),
       ],
@@ -216,6 +226,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
   }
 
   Widget familyMemberWidget(FamilyInformationModel model) {
+    int index = familyInfoList.indexWhere((element) => element.id == model.id);
     return Row(
       children: [
         Expanded(
@@ -236,8 +247,7 @@ class _FamilyInformationState extends State<FamilyInformation> {
                   disabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none),
               onChanged: (value) {
-                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .name = value;
+                familyInfoList[index].name = value;
                 setState(() {});
               },
             ),
@@ -271,46 +281,31 @@ class _FamilyInformationState extends State<FamilyInformation> {
               icon: const Icon(
                 Icons.keyboard_arrow_down_sharp,
                 color: Color(0xff444547),
-                size: 24,
+                size: 12,
               ),
               hint: const CustomText(
                 text: "",
                 color: Colors.black,
-                fontSize: 14,
+                fontSize: 10,
               ),
+              padding: EdgeInsets.zero,
               items: relations.map<DropdownMenuItem<DropdownItemModel>>((DropdownItemModel value) {
                 return DropdownMenuItem<DropdownItemModel>(
                   value: value,
                   child:
-                      CustomText(text: value.value, fontSize: 14, color: const Color(0xff070501)),
+                      CustomText(text: value.value, fontSize: 10, color: const Color(0xff070501)),
                 );
               }).toList(),
               isDense: true,
               isExpanded: true,
+              value: familyInfoList[index].gender != null
+                  ? relations.firstWhere((element) => element.key == familyInfoList[index].gender)
+                  : null,
               onChanged: (value) {
-                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .relation = value!.key;
+                familyInfoList[index].gender = value!.key;
                 setState(() {});
               },
             ),
-            /*child: TextFormField(
-              textAlign: TextAlign.center,
-              cursorColor: Colors.black,
-              style: const TextStyle(
-                  color: Colors.black, fontWeight: FontWeight.normal, fontSize: 12.5),
-              decoration:  InputDecoration(
-                  hintText: model.relation,
-                  hintStyle: const TextStyle(color: Colors.black, fontSize: 13),
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none),
-              onChanged: (value) {
-                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .relation = value;
-                setState(() {});
-              },
-            ),*/
           ),
         ),
         Expanded(
@@ -319,10 +314,10 @@ class _FamilyInformationState extends State<FamilyInformation> {
             height: 50,
             alignment: Alignment.center,
             child: Checkbox(
-              value: model.isAutistic,
+              value: model.disability == "1" ? true : false,
               onChanged: (value) {
                 familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .isAutistic = value!;
+                    .disability = value == true ? "1" : "2";
                 setState(() {});
               },
             ),
@@ -339,15 +334,15 @@ class _FamilyInformationState extends State<FamilyInformation> {
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.normal, fontSize: 12.5),
               decoration: InputDecoration(
-                  hintText: model.nidNo,
+                  hintText: model.nid,
                   hintStyle: const TextStyle(color: Colors.black, fontSize: 13),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none),
               onChanged: (value) {
-                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)]
-                    .nidNo = value;
+                familyInfoList[familyInfoList.indexWhere((element) => element.id == model.id)].nid =
+                    value;
                 setState(() {});
               },
             ),
@@ -357,9 +352,39 @@ class _FamilyInformationState extends State<FamilyInformation> {
     );
   }
 
-  void _saveData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String familyInformation = FamilyInformationModel.encode(familyInfoList);
-    prefs.setString(StorageConstants.familyInfo, familyInformation);
+  void _saveData({required HoldingEntryProvider provider}) async {
+    setState(() {
+      _loading = true;
+    });
+    provider.updateHoldingEntryRequest(child: familyInfoList);
+    provider.updateHoldingEntryRequest(planApprovalStatus: "1");
+    developer.log(jsonEncode(provider.holdingEntryRequest.toJson()));
+
+    var response = await provider.createNewHouseHolding();
+    setState(() {
+      _loading = false;
+    });
+
+    if (response?.statusCode == 200) {
+      if (jsonDecode(response!.body)["error"] == false) {
+        Fluttertoast.showToast(msg: "Data stored successfully!");
+        Navigator.pushAndRemoveUntil(
+            context, MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
+      } else {
+        Fluttertoast.showToast(msg: "Something went wrong!");
+      }
+    } else if (response?.statusCode == 401) {
+      Fluttertoast.showToast(msg: "Session timeout. Please login again!");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const LoginScreen(
+                    didSessionTimedOut: true,
+                  )));
+    } else {
+      Fluttertoast.showToast(msg: "Something went wrong!");
+    }
+
+    developer.log(response?.body ?? "");
   }
 }

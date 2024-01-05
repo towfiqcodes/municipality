@@ -9,31 +9,67 @@ GetSystemConfig getSystemConfigFromJson(String str) => GetSystemConfig.fromJson(
 String getSystemConfigToJson(GetSystemConfig data) => json.encode(data.toJson());
 
 class GetSystemConfig {
+  bool? error;
+  String? errorMessage;
+  GetSystemConfigData? data;
+
   GetSystemConfig({
-    this.error=false,
-    this.errorMessage='',
+    this.error,
+    this.errorMessage,
     this.data,
   });
 
-  bool error;
-  String errorMessage;
-  GetSystemConfigData? data;
+  GetSystemConfig copyWith({
+    bool? error,
+    String? errorMessage,
+    GetSystemConfigData? data,
+  }) =>
+      GetSystemConfig(
+        error: error ?? this.error,
+        errorMessage: errorMessage ?? this.errorMessage,
+        data: data ?? this.data,
+      );
 
   factory GetSystemConfig.fromJson(Map<String, dynamic> json) => GetSystemConfig(
-    error: json["error"] == null ? null : json["error"],
-    errorMessage: json["errorMessage"] == null ? null : json["errorMessage"],
-    data: json["data"] == null ? null : GetSystemConfigData.fromJson(json["data"]),
-  );
+        error: json["error"],
+        errorMessage: json["errorMessage"],
+        data: json["data"] == null ? null : GetSystemConfigData.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "error": error == null ? null : error,
-    "errorMessage": errorMessage == null ? null : errorMessage,
-    "data": data == null ? null : data?.toJson(),
-  };
+        "error": error,
+        "errorMessage": errorMessage,
+        "data": data?.toJson(),
+      };
 }
 
 class GetSystemConfigData {
+  int? appsVersion;
+  Map<String, String>? holdingType;
+  Map<String, String>? guardianType;
+  Map<String, String>? gender;
+  Map<String, String>? maritalStatus;
+  Map<String, String>? identityType;
+  Map<String, String>? familyType;
+  Map<String, String>? paymentType;
+  Map<String, String>? allowance;
+  Map<String, String>? disabilityStatus;
+  Map<String, String>? freedomFighterStatus;
+  Map<String, String>? waterConnectivityStatus;
+  Map<String, String>? wardNo;
+  Map<String, String>? postCode;
+  Map<String, String>? electricityState;
+  Map<String, String>? sanitationState;
+  Map<String, String>? houseType;
+  Map<String, String>? occupation;
+  Map<String, String>? fiscalYear;
+  Map<String, String>? relation;
+  Map<String, String>? disability;
+  Map<String, String>? religion;
+  PlanApproveStatus? planApproveStatus;
+
   GetSystemConfigData({
+    this.appsVersion,
     this.holdingType,
     this.guardianType,
     this.gender,
@@ -54,74 +90,181 @@ class GetSystemConfigData {
     this.fiscalYear,
     this.relation,
     this.disability,
+    this.religion,
+    this.planApproveStatus,
   });
 
-  Map<String, String>? holdingType;
-  Map<String, String>? guardianType;
-  Map<String, String>? gender;
-  Map<String, String>? maritalStatus;
-  Map<String, String>? identityType;
-  Map<String, String>? familyType;
-  Map<String, String>? paymentType;
-  List<dynamic>? allowance;
-  Map<String, String>? disabilityStatus;
-  Map<String, String>? freedomFighterStatus;
-  Map<String, String>? waterConnectivityStatus;
-  List<dynamic>? wardNo;
-  List<dynamic>? postCode;
-  Map<String, String>? electricityState;
-  Map<String, String>? sanitationState;
-  List<dynamic>? houseType;
-  List<dynamic>? occupation;
-  Map<String, String>? fiscalYear;
-  Map<String, String>? relation;
-  List<dynamic>? disability;
+  GetSystemConfigData copyWith({
+    int? appsVersion,
+    Map<String, String>? holdingType,
+    Map<String, String>? guardianType,
+    Map<String, String>? gender,
+    Map<String, String>? maritalStatus,
+    Map<String, String>? identityType,
+    Map<String, String>? familyType,
+    Map<String, String>? paymentType,
+    Map<String, String>? allowance,
+    Map<String, String>? disabilityStatus,
+    Map<String, String>? freedomFighterStatus,
+    Map<String, String>? waterConnectivityStatus,
+    Map<String, String>? wardNo,
+    Map<String, String>? postCode,
+    Map<String, String>? electricityState,
+    Map<String, String>? sanitationState,
+    Map<String, String>? houseType,
+    Map<String, String>? occupation,
+    Map<String, String>? fiscalYear,
+    Map<String, String>? relation,
+    Map<String, String>? disability,
+    Map<String, String>? religion,
+    PlanApproveStatus? planApproveStatus,
+  }) =>
+      GetSystemConfigData(
+        appsVersion: appsVersion ?? this.appsVersion,
+        holdingType: holdingType ?? this.holdingType,
+        guardianType: guardianType ?? this.guardianType,
+        gender: gender ?? this.gender,
+        maritalStatus: maritalStatus ?? this.maritalStatus,
+        identityType: identityType ?? this.identityType,
+        familyType: familyType ?? this.familyType,
+        paymentType: paymentType ?? this.paymentType,
+        allowance: allowance ?? this.allowance,
+        disabilityStatus: disabilityStatus ?? this.disabilityStatus,
+        freedomFighterStatus: freedomFighterStatus ?? this.freedomFighterStatus,
+        waterConnectivityStatus: waterConnectivityStatus ?? this.waterConnectivityStatus,
+        wardNo: wardNo ?? this.wardNo,
+        postCode: postCode ?? this.postCode,
+        electricityState: electricityState ?? this.electricityState,
+        sanitationState: sanitationState ?? this.sanitationState,
+        houseType: houseType ?? this.houseType,
+        occupation: occupation ?? this.occupation,
+        fiscalYear: fiscalYear ?? this.fiscalYear,
+        relation: relation ?? this.relation,
+        disability: disability ?? this.disability,
+        religion: religion ?? this.religion,
+        planApproveStatus: planApproveStatus ?? this.planApproveStatus,
+      );
 
   factory GetSystemConfigData.fromJson(Map<String, dynamic> json) => GetSystemConfigData(
-    holdingType: json["holdingType"] == null ? {} : Map.from(json["holdingType"]).map((k, v) => MapEntry<String, String>(k, v)),
-    guardianType: json["guardianType"] == null ? {} : Map.from(json["guardianType"]).map((k, v) => MapEntry<String, String>(k, v)),
-    gender: json["gender"] == null ? {} : Map.from(json["gender"]).map((k, v) => MapEntry<String, String>(k, v)),
-    maritalStatus: json["maritalStatus"] == null ? {} : Map.from(json["maritalStatus"]).map((k, v) => MapEntry<String, String>(k, v)),
-    identityType: json["identityType"] == null ? {} : Map.from(json["identityType"]).map((k, v) => MapEntry<String, String>(k, v)),
-    familyType: json["familyType"] == null ? {} : Map.from(json["familyType"]).map((k, v) => MapEntry<String, String>(k, v)),
-    paymentType: json["paymentType"] == null ? {} : Map.from(json["paymentType"]).map((k, v) => MapEntry<String, String>(k, v)),
-    allowance: json["allowance"] == null ? [] : List<dynamic>.from(json["allowance"].map((x) => x)),
-    disabilityStatus: json["disabilityStatus"] == null ? {} : Map.from(json["disabilityStatus"]).map((k, v) => MapEntry<String, String>(k, v)),
-    freedomFighterStatus: json["freedomFighterStatus"] == null ? {} : Map.from(json["freedomFighterStatus"]).map((k, v) => MapEntry<String, String>(k, v)),
-    waterConnectivityStatus: json["waterConnectivityStatus"] == null ? {} : Map.from(json["waterConnectivityStatus"]).map((k, v) => MapEntry<String, String>(k, v)),
-    wardNo: json["wardNo"] == null ? [] : List<dynamic>.from(json["wardNo"].map((x) => x)),
-    postCode: json["postCode"] == null ? [] : List<dynamic>.from(json["postCode"].map((x) => x)),
-    electricityState: json["electricityState"] == null ? {} : Map.from(json["electricityState"]).map((k, v) => MapEntry<String, String>(k, v)),
-    sanitationState: json["sanitationState"] == null ? {} : Map.from(json["sanitationState"]).map((k, v) => MapEntry<String, String>(k, v)),
-    houseType: json["houseType"] == null ? [] : List<dynamic>.from(json["houseType"].map((x) => x)),
-    occupation: json["occupation"] == null ? [] : List<dynamic>.from(json["occupation"].map((x) => x)),
-    fiscalYear: json["fiscalYear"] == null ? {} : Map.from(json["fiscalYear"]).map((k, v) => MapEntry<String, String>(k, v)),
-    relation: json["relation"] == null ? {} : Map.from(json["relation"]).map((k, v) => MapEntry<String, String>(k, v)),
-    disability: json["disability"] == null ? [null] : List<dynamic>.from(json["disability"].map((x) => x)),
-  );
+        appsVersion: json["appsVersion"],
+        holdingType: Map.from(json["holdingType"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        guardianType: Map.from(json["guardianType"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        gender: Map.from(json["gender"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        maritalStatus:
+            Map.from(json["maritalStatus"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        identityType: Map.from(json["identityType"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        familyType: Map.from(json["familyType"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        paymentType: Map.from(json["paymentType"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        allowance: Map.from(json["allowance"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        disabilityStatus:
+            Map.from(json["disabilityStatus"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        freedomFighterStatus:
+            Map.from(json["freedomFighterStatus"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        waterConnectivityStatus: Map.from(json["waterConnectivityStatus"]!)
+            .map((k, v) => MapEntry<String, String>(k, v)),
+        wardNo: Map.from(json["wardNo"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        postCode: Map.from(json["postCode"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        electricityState:
+            Map.from(json["electricityState"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        sanitationState:
+            Map.from(json["sanitationState"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        houseType: Map.from(json["houseType"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        occupation: Map.from(json["occupation"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        fiscalYear: Map.from(json["fiscalYear"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        relation: Map.from(json["relation"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        disability: Map.from(json["disability"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        religion: Map.from(json["religion"]!).map((k, v) => MapEntry<String, String>(k, v)),
+        planApproveStatus: json["planApproveStatus"] == null
+            ? null
+            : PlanApproveStatus.fromJson(json["planApproveStatus"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "holdingType": holdingType == null ? null : Map.from(holdingType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "guardianType": guardianType == null ? null : Map.from(guardianType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "gender": gender == null ? null : Map.from(gender!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "maritalStatus": maritalStatus == null ? null : Map.from(maritalStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "identityType": identityType == null ? null : Map.from(identityType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "familyType": familyType == null ? null : Map.from(familyType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "paymentType": paymentType == null ? null : Map.from(paymentType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "allowance": allowance == null ? null : List<dynamic>.from(allowance!.map((x) => x)),
-    "disabilityStatus": disabilityStatus == null ? null : Map.from(disabilityStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "freedomFighterStatus": freedomFighterStatus == null ? null : Map.from(freedomFighterStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "waterConnectivityStatus": waterConnectivityStatus == null ? null : Map.from(waterConnectivityStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "wardNo": wardNo == null ? null : List<dynamic>.from(wardNo!.map((x) => x)),
-    "postCode": postCode == null ? null : List<dynamic>.from(postCode!.map((x) => x)),
-    "electricityState": electricityState == null ? null : Map.from(electricityState!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "sanitationState": sanitationState == null ? null : Map.from(sanitationState!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "houseType": houseType == null ? null : List<dynamic>.from(houseType!.map((x) => x)),
-    "occupation": occupation == null ? null : List<dynamic>.from(occupation!.map((x) => x)),
-    "fiscalYear": fiscalYear == null ? null : Map.from(fiscalYear!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "relation": relation == null ? null : Map.from(relation!).map((k, v) => MapEntry<String, dynamic>(k, v)),
-    "disability": disability == null ? null : List<dynamic>.from(disability!.map((x) => x)),
-  };
+        "appsVersion": appsVersion,
+        "holdingType": Map.from(holdingType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "guardianType": Map.from(guardianType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "gender": Map.from(gender!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "maritalStatus": Map.from(maritalStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "identityType": Map.from(identityType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "familyType": Map.from(familyType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "paymentType": Map.from(paymentType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "allowance": Map.from(allowance!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "disabilityStatus":
+            Map.from(disabilityStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "freedomFighterStatus":
+            Map.from(freedomFighterStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "waterConnectivityStatus":
+            Map.from(waterConnectivityStatus!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "wardNo": Map.from(wardNo!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "postCode": Map.from(postCode!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "electricityState":
+            Map.from(electricityState!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "sanitationState":
+            Map.from(sanitationState!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "houseType": Map.from(houseType!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "occupation": Map.from(occupation!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "fiscalYear": Map.from(fiscalYear!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "relation": Map.from(relation!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "disability": Map.from(disability!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "religion": Map.from(religion!).map((k, v) => MapEntry<String, dynamic>(k, v)),
+        "planApproveStatus": planApproveStatus?.toJson(),
+      };
 }
 
+class PostCode {
+  String? the7;
 
+  PostCode({
+    this.the7,
+  });
+
+  PostCode copyWith({
+    String? the7,
+  }) =>
+      PostCode(
+        the7: the7 ?? this.the7,
+      );
+
+  factory PostCode.fromJson(Map<String, dynamic> json) => PostCode(
+        the7: json["7"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "7": the7,
+      };
+}
+
+class PlanApproveStatus {
+  String? the1;
+  String? the2;
+  String? empty;
+
+  PlanApproveStatus({
+    this.the1,
+    this.the2,
+    this.empty,
+  });
+
+  PlanApproveStatus copyWith({
+    String? the1,
+    String? the2,
+    String? empty,
+  }) =>
+      PlanApproveStatus(
+        the1: the1 ?? this.the1,
+        the2: the2 ?? this.the2,
+        empty: empty ?? this.empty,
+      );
+
+  factory PlanApproveStatus.fromJson(Map<String, dynamic> json) => PlanApproveStatus(
+        the1: json["1"],
+        the2: json["2"],
+        empty: json[""],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "1": the1,
+        "2": the2,
+        "": empty,
+      };
+}

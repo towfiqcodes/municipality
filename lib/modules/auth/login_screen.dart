@@ -16,6 +16,10 @@ import '../../shared/widgets/gradient_background.dart';
 import '../../shared/widgets/input_field.dart';
 
 class LoginScreen extends StatefulWidget {
+  final bool? didSessionTimedOut;
+
+  const LoginScreen({Key? key, this.didSessionTimedOut}) : super(key: key);
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -25,9 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
 
-  final _emailController = TextEditingController(text: "jamalpur-admin@pourashava.org");
+  final _emailController = TextEditingController(text: "dhanbari-admin@pourashava.org");
 
-  final _passwordController = TextEditingController(text: "Raozan-1");
+  final _passwordController = TextEditingController(text: "Dhanbari\$%67");
 
   final _idNumberController = TextEditingController();
 
@@ -51,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is AuthSuccessState) {
             print('AuthSuccessState');
+
             Navigator.pushNamed(context, RoutePath.home);
           }
           if (state is AuthFailState) {
@@ -63,7 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
         bloc: BlocProvider.of<AuthBloc>(context),
         listener: (context, state) {
           if (state is AuthLoginSuccessState) {
-            Navigator.pushNamed(context, RoutePath.home);
+            if (widget.didSessionTimedOut == true) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushNamedAndRemoveUntil(context, RoutePath.home, (route) => false);
+            }
           }
 
           if (state is AuthAppFailureState) {

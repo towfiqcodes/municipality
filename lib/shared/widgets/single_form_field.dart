@@ -16,8 +16,10 @@ Widget singleFormField(
     Function(DropdownItemModel?)? dropdownOnChanged,
     bool isEnable = true,
     TextEditingController? controller,
+    TextInputType? textInputType,
     Function()? onTap,
-    String? Function(String?)? validator, String? Function(DropdownItemModel?)? dropdownValidator}) {
+    String? Function(String?)? validator,
+    String? Function(DropdownItemModel?)? dropdownValidator}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 15),
     child: Column(
@@ -64,7 +66,11 @@ Widget singleFormField(
                 color: Color(0xff444547),
                 size: 24,
               ),
-              hint: CustomText(text: hint, color: Colors.black, fontSize: 14,),
+              hint: CustomText(
+                text: hint,
+                color: Colors.black,
+                fontSize: 14,
+              ),
               items:
                   dropdownList.map<DropdownMenuItem<DropdownItemModel>>((DropdownItemModel value) {
                 return DropdownMenuItem<DropdownItemModel>(
@@ -87,6 +93,7 @@ Widget singleFormField(
               controller: controller,
               cursorColor: Colors.black,
               enabled: isEnable,
+              keyboardType: textInputType,
               style:
                   const TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 14),
               decoration: InputDecoration(
